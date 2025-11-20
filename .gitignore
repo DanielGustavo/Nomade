@@ -1,0 +1,5 @@
+pack/
+
+!mason/
+mason/*
+!mason/registries
