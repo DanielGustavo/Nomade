@@ -29,8 +29,8 @@ install_pkg() {
   log_info "Ensuring '${pkg_name}' is installed..."
 
   if ! command -v "${pkg_name}" &> /dev/null; then
-      log_info "${pkg_name} not found. Installing it now..."
-      sudo apt install -y "${pkg_name}" || log_error "Failed to install '${pkg_name}'."
+    log_info "${pkg_name} not found. Installing it now..."
+    sudo apt install -y "${pkg_name}" || log_error "Failed to install '${pkg_name}'."
   fi
 }
 #######################################
@@ -47,7 +47,11 @@ install_pkg "gcc"
 install_pkg "fzf"
 install_pkg "unzip"
 install_pkg "fontconfig"
-install_pkg "nodejs"
+
+if ! command -v "npm" &> /dev/null; then
+  log_info "npm not found. Installing nodejs now..."
+  sudo apt install -y "nodejs" || log_error "Failed to install 'nodejs'."
+fi
 
 log_info "All dependencies installed successfully."
 #######################################
