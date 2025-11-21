@@ -32,6 +32,14 @@ local servers_to_configure = {
 
   ['ts_ls'] = {
     root_markers = { '.git', 'tsconfig.json', 'jsconfig.json' },
+    init_options = {
+      plugins = {
+        {
+          name = "@styled/typescript-styled-plugin",
+          location = os.getenv("HOME") .. "/.config/nvim/node_modules/@styled/typescript-styled-plugin"
+        },
+      },
+    }
   },
 
   ['jsonls'] = {},

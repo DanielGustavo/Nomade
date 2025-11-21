@@ -1,0 +1,20 @@
+{
+  "name": "Nomade",
+  "version": "0.1.0",
+  "description": "This is a personal Neovim configuration designed to be minimalistic, modern, and efficient for setup. It aims to provide a smooth and productive coding experience.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielGustavo/Nomade.git"
+  },
+  "keywords": [],
+  "author": "DanielGustavo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanielGustavo/Nomade/issues"
+  },
+  "homepage": "https://github.com/DanielGustavo/Nomade#readme",
+  "devDependencies": {
+    "@styled/typescript-styled-plugin": "^1.0.1",
+    "typescript": "^5.9.3"
+  }
+}

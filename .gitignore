@@ -3,3 +3,5 @@ pack/
 !mason/
 mason/*
 !mason/registries
+
+node_modules/

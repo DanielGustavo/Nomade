@@ -101,10 +101,11 @@ fi
 #######################################
 
 #######################################
-## install eslint and prettier daemons
+## install packages
 #######################################
 npm install -g eslint_d
 npm install -g @fsouza/prettierd
+npm install
 #######################################
 
 #######################################

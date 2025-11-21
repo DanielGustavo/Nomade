@@ -7,7 +7,8 @@ require('nvim-treesitter.configs').setup({
     "vimdoc",
     "query",
     "markdown",
-    "markdown_inline"
+    "markdown_inline",
+    "styled"
   },
 
   sync_install = false,
