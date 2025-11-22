@@ -13,7 +13,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:github/rhysd/actionlint@v1.7.8",
+      "id": "pkg:github/rhysd/actionlint@v1.7.9",
       "asset": [
         {
           "target": "darwin_x64",
@@ -1195,7 +1195,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:npm/@biomejs/biome@2.3.6"
+      "id": "pkg:npm/@biomejs/biome@2.3.7"
     },
     "schemas": {
       "lsp": "vscode:https://raw.githubusercontent.com/biomejs/biome-vscode/main/package.json"
@@ -3158,7 +3158,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/css-variables-language-server@2.7.2"
+      "id": "pkg:npm/css-variables-language-server@2.8.1"
     },
     "bin": {
       "css-variables-language-server": "npm:css-variables-language-server"
@@ -3227,7 +3227,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:golang/cuelang.org/go@v0.15.0#cmd/cue"
+      "id": "pkg:golang/cuelang.org/go@v0.15.1#cmd/cue"
     },
     "bin": {
       "cue": "golang:cue"
@@ -4143,7 +4143,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:github/editorconfig-checker/editorconfig-checker@v3.4.1",
+      "id": "pkg:github/editorconfig-checker/editorconfig-checker@v3.5.0",
       "asset": [
         {
           "target": "darwin_arm64",
@@ -7590,7 +7590,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:generic/eclipse/eclipse.jdt.ls@v1.52.0",
+      "id": "pkg:generic/eclipse/eclipse.jdt.ls@v1.53.0",
       "download": [
         {
           "target": [
@@ -7598,7 +7598,7 @@
             "darwin_arm64"
           ],
           "files": {
-            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202510301627.tar.gz",
+            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202511192211.tar.gz",
             "lombok.jar": "https://projectlombok.org/downloads/lombok.jar"
           },
           "config": "config_mac/"
@@ -7606,7 +7606,7 @@
         {
           "target": "linux",
           "files": {
-            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202510301627.tar.gz",
+            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202511192211.tar.gz",
             "lombok.jar": "https://projectlombok.org/downloads/lombok.jar"
           },
           "config": "config_linux/"
@@ -7614,7 +7614,7 @@
         {
           "target": "win",
           "files": {
-            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202510301627.tar.gz",
+            "jdtls.tar.gz": "https://download.eclipse.org/jdtls/milestones/{{ version | strip_prefix \"v\" }}/jdt-language-server-{{ version | strip_prefix \"v\" }}-202511192211.tar.gz",
             "lombok.jar": "https://projectlombok.org/downloads/lombok.jar"
           },
           "config": "config_win/"
@@ -7630,7 +7630,7 @@
     "share": {
       "jdtls/lombok.jar": "lombok.jar",
       "jdtls/plugins/": "plugins/",
-      "jdtls/plugins/org.eclipse.equinox.launcher.jar": "plugins/org.eclipse.equinox.launcher_1.7.100.v20251014-1222.jar",
+      "jdtls/plugins/org.eclipse.equinox.launcher.jar": "plugins/org.eclipse.equinox.launcher_1.7.100.v20251111-0406.jar",
       "jdtls/config/": "{{source.download.config}}"
     },
     "neovim": {
@@ -9650,7 +9650,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/razziel89/mdslw@0.15.2",
+      "id": "pkg:github/razziel89/mdslw@0.16.0",
       "asset": [
         {
           "target": [
@@ -11264,7 +11264,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/darold/pgformatter@v5.6",
+      "id": "pkg:github/darold/pgformatter@v5.8",
       "build": {
         "run": ""
       }
@@ -11287,7 +11287,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/PHP-CS-Fixer/PHP-CS-Fixer@v3.89.2",
+      "id": "pkg:github/PHP-CS-Fixer/PHP-CS-Fixer@v3.90.0",
       "asset": {
         "file": "php-cs-fixer.phar"
       }
@@ -11310,7 +11310,7 @@
       "DAP"
     ],
     "source": {
-      "id": "pkg:github/xdebug/vscode-php-debug@v1.38.0",
+      "id": "pkg:github/xdebug/vscode-php-debug@v1.38.1",
       "asset": {
         "file": "php-debug-{{ version | strip_prefix \"v\" }}.vsix"
       }
@@ -12584,7 +12584,7 @@
       "lsp": "vscode:https://raw.githubusercontent.com/facebook/pyrefly/{{version}}/lsp/package.json"
     },
     "source": {
-      "id": "pkg:pypi/pyrefly@0.42.2"
+      "id": "pkg:pypi/pyrefly@0.42.3"
     },
     "bin": {
       "pyrefly": "pypi:pyrefly"
@@ -13495,7 +13495,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:gem/ruby-lsp@0.26.3",
+      "id": "pkg:gem/ruby-lsp@0.26.4",
       "extra_packages": [
         "ruby-lsp-rails"
       ]
@@ -13611,7 +13611,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:pypi/ruff@0.14.5"
+      "id": "pkg:pypi/ruff@0.14.6"
     },
     "bin": {
       "ruff": "pypi:ruff"
@@ -13656,41 +13656,41 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:github/rvben/rumdl@v0.0.164",
+      "id": "pkg:github/rvben/rumdl@v0.0.181",
       "asset": [
         {
           "target": "darwin_arm64",
-          "file": "rumdl-v0.0.164-aarch64-apple-darwin.tar.gz",
+          "file": "rumdl-{{version}}-aarch64-apple-darwin.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "darwin_x64",
-          "file": "rumdl-v0.0.164-x86_64-apple-darwin.tar.gz",
+          "file": "rumdl-{{version}}-x86_64-apple-darwin.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "linux_x64_gnu",
-          "file": "rumdl-v0.0.164-x86_64-unknown-linux-gnu.tar.gz",
+          "file": "rumdl-{{version}}-x86_64-unknown-linux-gnu.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "linux_arm64_gnu",
-          "file": "rumdl-v0.0.164-aarch64-unknown-linux-gnu.tar.gz",
+          "file": "rumdl-{{version}}-aarch64-unknown-linux-gnu.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "linux_x64",
-          "file": "rumdl-v0.0.164-x86_64-unknown-linux-musl.tar.gz",
+          "file": "rumdl-{{version}}-x86_64-unknown-linux-musl.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "linux_arm64",
-          "file": "rumdl-v0.0.164-aarch64-unknown-linux-musl.tar.gz",
+          "file": "rumdl-{{version}}-aarch64-unknown-linux-musl.tar.gz",
           "bin": "rumdl"
         },
         {
           "target": "win_x64",
-          "file": "rumdl-v0.0.164-x86_64-pc-windows-msvc.zip",
+          "file": "rumdl-{{version}}-x86_64-pc-windows-msvc.zip",
           "bin": "rumdl.exe"
         }
       ]
@@ -14297,7 +14297,7 @@
       "Compiler"
     ],
     "source": {
-      "id": "pkg:github/shader-slang/slang@v2025.22",
+      "id": "pkg:github/shader-slang/slang@v2025.22.1",
       "asset": [
         {
           "target": "linux_x64_gnu",
@@ -14990,7 +14990,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:gem/sorbet@0.6.12780",
+      "id": "pkg:gem/sorbet@0.6.12783",
       "supported_platforms": [
         "unix"
       ]
@@ -15512,7 +15512,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:npm/stylelint@16.25.0"
+      "id": "pkg:npm/stylelint@16.26.0"
     },
     "bin": {
       "stylelint": "npm:stylelint"
@@ -17081,7 +17081,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:github/trufflesecurity/trufflehog@v3.91.0",
+      "id": "pkg:github/trufflesecurity/trufflehog@v3.91.1",
       "asset": [
         {
           "target": "darwin_x64",
@@ -17205,7 +17205,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/@typescript/native-preview@7.0.0-dev.20251120.1"
+      "id": "pkg:npm/@typescript/native-preview@7.0.0-dev.20251121.1"
     },
     "bin": {
       "tsgo": "npm:tsgo"
@@ -18829,7 +18829,7 @@
       "Runtime"
     ],
     "source": {
-      "id": "pkg:github/cpisciotta/xcbeautify@3.1.0",
+      "id": "pkg:github/cpisciotta/xcbeautify@3.1.1",
       "asset": [
         {
           "target": "darwin_arm64",

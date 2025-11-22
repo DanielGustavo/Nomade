@@ -87,7 +87,6 @@ end
 installPlugin("stevearc/oil.nvim", "v2.15.0")
 installPlugin("nvim-treesitter/nvim-treesitter", "v0.10.0")
 installPlugin("windwp/nvim-ts-autotag") -- depends on: nvim-treesitter/nvim-treesitter
-installPlugin("nvim-mini/mini.pairs", "v0.16.0")
 installPlugin("mason-org/mason.nvim", "v2.1.0")
 installPlugin("ibhagwan/fzf-lua", "0.7")
 installPlugin("nvim-lua/plenary.nvim", "v0.1.4")
@@ -100,3 +99,4 @@ installPlugin("saghen/blink.cmp", "v1.8.0")
 installPlugin("esmuellert/nvim-eslint")
 installPlugin("neovim/nvim-lspconfig", "v2.5.0")
 installPlugin("mason-org/mason-lspconfig.nvim", "v2.1.0")
+installPlugin("windwp/nvim-autopairs", "0.11.0")
