@@ -6,6 +6,7 @@ require("mysetup.options")
 -- libs
 require("mysetup.mason")
 require("mysetup.lsp")
+require("mysetup.linter")
 require("mysetup.treesitter")
 require("mysetup.oil")
 require("mysetup.fzf")

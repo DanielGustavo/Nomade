@@ -43,6 +43,7 @@ local servers_to_configure = {
   },
 
   ['jsonls'] = {},
+  ['eslint'] = {}
 }
 
 require('mason-lspconfig').setup({
@@ -54,5 +55,4 @@ for server, config in pairs(servers_to_configure) do
   vim.lsp.config(server, config)
 end
 
-require('nvim-eslint').setup()
 vim.lsp.enable(vim.tbl_keys(servers_to_configure))

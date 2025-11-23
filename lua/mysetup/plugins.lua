@@ -91,12 +91,13 @@ installPlugin("mason-org/mason.nvim", "v2.1.0")
 installPlugin("ibhagwan/fzf-lua", "0.7")
 installPlugin("nvim-lua/plenary.nvim", "v0.1.4")
 installPlugin("ThePrimeagen/harpoon", "harpoon2") -- depends on: nvim-lua/plenary.nvim
-installPlugin("nvim-lualine/lualine.nvim") -- depends on: nvim-tree/nvim-web-devicons
+installPlugin("nvim-lualine/lualine.nvim")        -- depends on: nvim-tree/nvim-web-devicons
 installPlugin("nvim-tree/nvim-web-devicons", "v0.100")
 installPlugin("lewis6991/gitsigns.nvim", "v1.0.2")
 installPlugin("ellisonleao/gruvbox.nvim", "2.0.0")
 installPlugin("saghen/blink.cmp", "v1.8.0")
-installPlugin("esmuellert/nvim-eslint")
 installPlugin("neovim/nvim-lspconfig", "v2.5.0")
 installPlugin("mason-org/mason-lspconfig.nvim", "v2.1.0")
 installPlugin("windwp/nvim-autopairs", "0.11.0")
+installPlugin("stevearc/conform.nvim", "v9.1.0")
+installPlugin("neoclide/vim-jsx-improve", "0.0.1")

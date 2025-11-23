@@ -1022,6 +1022,9 @@
     },
     "bin": {
       "basics-language-server": "npm:basics-language-server"
+    },
+    "neovim": {
+      "lspconfig": "basics_ls"
     }
   },
   {
@@ -2181,7 +2184,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/weavejester/cljfmt@0.15.5",
+      "id": "pkg:github/weavejester/cljfmt@0.15.6",
       "asset": [
         {
           "target": "darwin_arm64",
@@ -7413,7 +7416,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/intelephense@1.16.0"
+      "id": "pkg:npm/intelephense@1.16.1"
     },
     "schemas": {
       "lsp": "vscode:https://raw.githubusercontent.com/bmewburn/vscode-intelephense/master/package.json"
@@ -10002,7 +10005,7 @@
   {
     "name": "neocmakelsp",
     "description": "CMake LSP implementation based on Tower and Tree-sitter.",
-    "homepage": "https://github.com/Decodetalkers/neocmakelsp",
+    "homepage": "https://github.com/neocmakelsp/neocmakelsp",
     "licenses": [
       "MIT"
     ],
@@ -10013,32 +10016,47 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:github/neocmakelsp/neocmakelsp@v0.8.26",
+      "id": "pkg:github/neocmakelsp/neocmakelsp@v0.9.0",
       "asset": [
         {
-          "target": "darwin_arm64",
-          "file": "neocmakelsp-aarch64-apple-darwin"
-        },
-        {
-          "target": "darwin_x64",
-          "file": "neocmakelsp-x86_64-apple-darwin"
-        },
-        {
-          "target": "linux_x64",
-          "file": "neocmakelsp-x86_64-unknown-linux-musl"
+          "target": "darwin",
+          "file": "neocmakelsp-universal-apple-darwin.tar.gz",
+          "bin": "neocmakelsp"
         },
         {
           "target": "linux_arm64_gnu",
-          "file": "neocmakelsp-aarch64-unknown-linux-gnu"
+          "file": "neocmakelsp-aarch64-unknown-linux-gnu.tar.gz",
+          "bin": "neocmakelsp"
+        },
+        {
+          "target": "linux_x64_gnu",
+          "file": "neocmakelsp-x86_64-unknown-linux-gnu.tar.gz",
+          "bin": "neocmakelsp"
+        },
+        {
+          "target": "linux_arm64",
+          "file": "neocmakelsp-aarch64-unknown-linux-musl.tar.gz",
+          "bin": "neocmakelsp"
+        },
+        {
+          "target": "linux_x64",
+          "file": "neocmakelsp-x86_64-unknown-linux-musl.tar.gz",
+          "bin": "neocmakelsp"
+        },
+        {
+          "target": "win_arm64",
+          "file": "neocmakelsp-aarch64-pc-windows-msvc.zip",
+          "bin": "neocmakelsp.exe"
         },
         {
           "target": "win_x64",
-          "file": "neocmakelsp-x86_64-pc-windows-msvc.exe"
+          "file": "neocmakelsp-x86_64-pc-windows-msvc.zip",
+          "bin": "neocmakelsp.exe"
         }
       ]
     },
     "bin": {
-      "neocmakelsp": "{{source.asset.file}}"
+      "neocmakelsp": "{{source.asset.bin}}"
     },
     "neovim": {
       "lspconfig": "neocmake"
@@ -11310,7 +11328,7 @@
       "DAP"
     ],
     "source": {
-      "id": "pkg:github/xdebug/vscode-php-debug@v1.38.1",
+      "id": "pkg:github/xdebug/vscode-php-debug@v1.38.2",
       "asset": {
         "file": "php-debug-{{ version | strip_prefix \"v\" }}.vsix"
       }
@@ -12140,7 +12158,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:cargo/protols@0.12.9"
+      "id": "pkg:cargo/protols@0.13.0"
     },
     "bin": {
       "protols": "cargo:protols"
@@ -14990,7 +15008,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:gem/sorbet@0.6.12783",
+      "id": "pkg:gem/sorbet@0.6.12784",
       "supported_platforms": [
         "unix"
       ]
@@ -16791,7 +16809,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:github/Myriad-Dreamin/tinymist@v0.14.0",
+      "id": "pkg:github/Myriad-Dreamin/tinymist@v0.14.2",
       "asset": [
         {
           "target": "linux_x64_gnu",
@@ -16943,7 +16961,7 @@
       "lspconfig": "tombi"
     },
     "source": {
-      "id": "pkg:pypi/tombi@0.6.52"
+      "id": "pkg:pypi/tombi@0.6.53"
     },
     "bin": {
       "tombi": "pypi:tombi"
@@ -17205,7 +17223,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/@typescript/native-preview@7.0.0-dev.20251121.1"
+      "id": "pkg:npm/@typescript/native-preview@7.0.0-dev.20251123.1"
     },
     "bin": {
       "tsgo": "npm:tsgo"
@@ -18540,7 +18558,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/%40vue/language-server@3.1.4",
+      "id": "pkg:npm/%40vue/language-server@3.1.5",
       "extra_packages": [
         "typescript"
       ]
@@ -19082,7 +19100,7 @@
     ],
     "categories": [],
     "source": {
-      "id": "pkg:github/mikefarah/yq@v4.48.2",
+      "id": "pkg:github/mikefarah/yq@v4.49.1",
       "asset": [
         {
           "target": "darwin_arm64",
