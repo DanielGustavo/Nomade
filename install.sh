@@ -47,6 +47,8 @@ install_pkg "gcc"
 install_pkg "fzf"
 install_pkg "unzip"
 install_pkg "fontconfig"
+install_pkg "fd-find"
+install_pkg "ripgrep"
 
 if ! command -v "npm" &> /dev/null; then
   log_info "npm not found. Installing nodejs now..."
