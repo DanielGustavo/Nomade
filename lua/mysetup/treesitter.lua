@@ -20,6 +20,9 @@ require('nvim-treesitter.configs').setup({
   },
 
   modules = {},
-  ignore_install = {}
-})
+  ignore_install = {},
 
+  indent = {
+    enable = true
+  },
+})

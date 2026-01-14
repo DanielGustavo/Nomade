@@ -13,7 +13,7 @@ require("blink.cmp").setup({
     documentation = {
       auto_show = true,
     },
-    accept = { auto_brackets = { enabled = true } },
+    accept = { auto_brackets = { enabled = false } },
   },
   sources = {
     default = { 'lsp', 'path', 'snippets', 'buffer' },
