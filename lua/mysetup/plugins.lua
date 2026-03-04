@@ -100,3 +100,6 @@ installPlugin("neovim/nvim-lspconfig", "v2.5.0")
 installPlugin("mason-org/mason-lspconfig.nvim", "v2.1.0")
 installPlugin("windwp/nvim-autopairs", "0.10.0")
 installPlugin("stevearc/conform.nvim", "v9.1.0")
+installPlugin("nvim-neotest/nvim-nio", "v1.10.1") -- required by nvim-dap-ui
+installPlugin("mfussenegger/nvim-dap", "0.10.0")  -- core DAP client
+installPlugin("rcarriga/nvim-dap-ui", "v4.0.0")   -- depends on: nvim-neodev/nvim-nio
