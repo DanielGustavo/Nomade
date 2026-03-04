@@ -68,6 +68,11 @@ install_pkg "unzip"
 install_pkg "fontconfig"
 install_pkg "fd-find"
 install_pkg "ripgrep"
+install_pkg "cmake"
+install_pkg "bear"
+# NOTE: After first nvim startup, cmake-language-server is installed by mason.
+# If it crashes (pygls 2.x incompatibility), run:
+#   ~/.config/nvim/mason/packages/cmake-language-server/venv/bin/pip install "pygls<2.0.0"
 
 if ! command -v "npm" &> /dev/null; then
   log_info "npm not found. Installing nodejs now..."

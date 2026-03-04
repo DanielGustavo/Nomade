@@ -8,7 +8,10 @@ require('nvim-treesitter.configs').setup({
     "query",
     "markdown",
     "markdown_inline",
-    "styled"
+    "styled",
+    "c",
+    "cpp",
+    "cmake"
   },
 
   sync_install = false,

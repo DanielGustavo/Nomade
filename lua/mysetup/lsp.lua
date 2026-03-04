@@ -45,7 +45,16 @@ local servers_to_configure = {
   ['jsonls'] = {},
   ['eslint'] = {},
   ['prismals'] = {},
-  ['tailwindcss'] = {}
+  ['tailwindcss'] = {},
+
+  ['clangd'] = {
+    root_markers = { 'compile_commands.json', '.clangd', 'CMakeLists.txt', '.git' },
+    cmd = { 'clangd', '--background-index', '--clang-tidy', '--header-insertion=iwyu' },
+  },
+
+  ['cmake'] = {
+    root_markers = { 'CMakeLists.txt', '.git' },
+  }
 }
 
 require('mason-lspconfig').setup({

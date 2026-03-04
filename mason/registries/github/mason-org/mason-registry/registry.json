@@ -558,7 +558,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:github/forcedotcom/salesforcedx-vscode@v65.18.0",
+      "id": "pkg:github/forcedotcom/salesforcedx-vscode@v66.0.0",
       "asset": {
         "file": "salesforcedx-vscode-apex-{{ version | strip_prefix \"v\" }}.vsix"
       }
@@ -2768,7 +2768,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:npm/%40commitlint/cli@20.4.2",
+      "id": "pkg:npm/%40commitlint/cli@20.4.3",
       "extra_packages": [
         "@commitlint/config-conventional",
         "commitlint-format-json"
@@ -2840,7 +2840,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:npm/%40github/copilot-language-server@1.439.0"
+      "id": "pkg:npm/%40github/copilot-language-server@1.440.0"
     },
     "bin": {
       "copilot-language-server": "npm:copilot-language-server"
@@ -3328,7 +3328,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:golang/cuelang.org/go@v0.15.4#cmd/cue"
+      "id": "pkg:golang/cuelang.org/go@v0.16.0#cmd/cue"
     },
     "bin": {
       "cue": "golang:cue"
@@ -3620,7 +3620,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:github/denoland/deno@v2.7.1",
+      "id": "pkg:github/denoland/deno@v2.7.2",
       "asset": [
         {
           "target": "darwin_arm64",
@@ -6705,7 +6705,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/google/google-java-format@v1.34.1",
+      "id": "pkg:github/google/google-java-format@v1.35.0",
       "asset": [
         {
           "target": "darwin_arm64",
@@ -11697,7 +11697,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:cargo/pest-language-server@0.3.12"
+      "id": "pkg:cargo/pest-language-server@0.3.13"
     },
     "bin": {
       "pest-language-server": "cargo:pest-language-server"
@@ -13010,7 +13010,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:pypi/pyproject-fmt@2.18.0"
+      "id": "pkg:pypi/pyproject-fmt@2.18.1"
     },
     "bin": {
       "pyproject-fmt": "pypi:pyproject-fmt"
@@ -16422,7 +16422,7 @@
       "Formatter"
     ],
     "source": {
-      "id": "pkg:github/nicklockwood/SwiftFormat@0.59.1",
+      "id": "pkg:github/nicklockwood/SwiftFormat@0.60.0",
       "asset": [
         {
           "target": "darwin_arm64",
@@ -17591,7 +17591,7 @@
       "lspconfig": "tombi"
     },
     "source": {
-      "id": "pkg:pypi/tombi@0.8.0"
+      "id": "pkg:pypi/tombi@0.9.0"
     },
     "bin": {
       "tombi": "pypi:tombi"
@@ -17681,7 +17681,7 @@
       "Linter"
     ],
     "source": {
-      "id": "pkg:github/aquasecurity/trivy@v0.69.2",
+      "id": "pkg:github/aquasecurity/trivy@v0.69.3",
       "asset": [
         {
           "target": "darwin_x64",
@@ -18972,7 +18972,7 @@
       "LSP"
     ],
     "source": {
-      "id": "pkg:github/forcedotcom/salesforcedx-vscode@v65.18.0",
+      "id": "pkg:github/forcedotcom/salesforcedx-vscode@v66.0.0",
       "asset": {
         "file": "salesforcedx-vscode-visualforce-{{ version | strip_prefix \"v\" }}.vsix"
       }
