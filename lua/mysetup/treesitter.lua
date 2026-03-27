@@ -11,7 +11,8 @@ require('nvim-treesitter.configs').setup({
     "styled",
     "c",
     "cpp",
-    "cmake"
+    "cmake",
+    "java"
   },
 
   sync_install = false,

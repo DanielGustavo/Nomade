@@ -146,6 +146,16 @@ log_info "Installing global NPM packages..."
 sudo npm install -g eslint_d @fsouza/prettierd || log_info "NPM install failed, check permissions."
 
 #######################################
+## Java Environment
+#######################################
+if ! command -v java &> /dev/null; then
+  log_info "Java not found. Installing OpenJDK 21..."
+  sudo apt install -y openjdk-21-jdk || log_error "Failed to install OpenJDK."
+else
+  log_info "Java is already installed: $(java -version 2>&1 | head -1)"
+fi
+
+#######################################
 ## Finalization
 #######################################
 log_info "Installation completed successfully!"

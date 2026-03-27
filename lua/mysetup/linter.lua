@@ -4,6 +4,7 @@ require("conform").setup({
     typescript = { "prettierd" },
     c = { "clang-format" },
     cpp = { "clang-format" },
+    java = { "google-java-format" },
   },
   format_on_save = {
     timeout_ms = 500,
