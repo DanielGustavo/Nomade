@@ -13,15 +13,17 @@ Run:
 ```
 
 The installer installs or verifies the system dependencies, Neovim `v0.11.5`,
-FiraCode Nerd Font, Node/npm, and the global `eslint_d` and `prettierd` npm
-packages. It creates `/usr/local/bin/nvim` unless another Neovim executable is
-already present. When another installation exists, the script asks for a custom
-executable name and creates an isolated `NVIM_APPNAME` wrapper.
+FiraCode Nerd Font, Node/npm, the local locked Node dependencies, and the global
+`eslint_d` and `prettierd` npm packages. It creates `/usr/local/bin/nvim`
+unless another Neovim executable is already present. When another installation
+exists, the script asks for a safe custom executable name and creates an
+isolated `NVIM_APPNAME` wrapper.
 
-On first startup, the configuration clones missing plugins into
-`~/.config/nvim/pack/libs/start` and installs configured language servers through
-Mason. Plugin and Mason directories are local generated state and are ignored
-by Git.
+On first startup, the configuration clones missing plugins at pinned revisions
+into Neovim's data directory at `<data>/site/pack/libs/start`, installs
+configured language servers and CodeLLDB through Mason, and uses the local
+TypeScript plugin when available. Plugin and Mason directories are local
+generated state and are ignored by Git.
 
 ## Features
 
@@ -98,8 +100,8 @@ The DAP setup targets C and C++ through CodeLLDB:
 - `<leader>DE`: Evaluate an expression
 - `<leader>DP`: Set the executable path
 
-The CodeLLDB adapter is expected at
-`~/.config/nvim/mason/packages/codelldb/extension/adapter/codelldb`.
+CodeLLDB is installed through Mason. Its adapter path follows Neovim's data
+directory, so alternate `NVIM_APPNAME` installations do not share DAP state.
 
 ### Interface
 
@@ -135,7 +137,8 @@ General mappings include:
 - `lua/mysetup/lsp.lua`: LSP servers and attach keymaps
 - `lua/mysetup/mason.lua`: Mason root configuration
 - `lua/mysetup/treesitter.lua`: Parser and syntax configuration
-- `lua/mysetup/linter.lua`: Conform formatter configuration
+- `lua/mysetup/formatting.lua`: Conform formatter configuration
+- `lua/mysetup/autopairs.lua`: Automatic bracket pairing
 - Other files in `lua/mysetup/`: Individual plugin configuration
 - `install.sh`: OS-level installation and Neovim distribution setup
 

@@ -1,5 +1,4 @@
 vim.o.background = "dark"
-vim.cmd([[colorscheme gruvbox]])
 
 require("gruvbox").setup({
   terminal_colors = true, -- add neovim terminal colors
@@ -27,4 +26,3 @@ require("gruvbox").setup({
 })
 
 vim.cmd("colorscheme gruvbox")
-

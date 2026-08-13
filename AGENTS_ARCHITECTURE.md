@@ -25,30 +25,33 @@ and plugins.
 ├── package-lock.json
 ├── .luarc.json               # Lua language-server/editor settings
 ├── README.md                 # User-facing feature and setup notes
-├── mason/                    # Generated Mason state; ignored by Git
-└── pack/libs/start/          # Runtime plugin checkout directory; ignored
+├── mason/                    # Generated Mason state under stdpath("data"); ignored
+└── pack/libs/start/          # Runtime plugin checkout directory under data; ignored
 ```
 
-`pack/libs/start` is generated locally by `lua/mysetup/plugins.lua` and is not
-part of the repository. Mason registries and installed language tools are also
-local generated state and are ignored by Git.
+`<data>/site/pack/libs/start` is generated locally by `lua/mysetup/plugins.lua`
+and is not part of the repository. Mason registries and installed language tools
+are also local generated state and are ignored by Git.
 
 ## Startup Flow
 
 Neovim evaluates `init.lua` in this order:
 
 1. `mysetup.remap` sets the leader and core keymaps.
-2. `mysetup.plugins` creates `pack/libs/start`, clones missing plugin
-   repositories, and calls `:packadd` for newly cloned plugins.
+ 2. `mysetup.plugins` creates `<data>/site/pack/libs/start`, clones missing
+    plugin repositories at pinned revisions, and calls `:packadd` for newly
+    cloned plugins.
 3. `mysetup.options` applies editor options.
-4. `mysetup.mason` creates/configures the local Mason root.
-5. `mysetup.lsp` configures capabilities, LSP attach maps, servers, and Mason
-   server installation.
-6. `mysetup.linter` configures Conform format-on-save.
-7. `mysetup.treesitter` configures parsers and highlighting.
-8. Feature modules configure Oil, fzf-lua, GitSigns, Harpoon, Lualine,
-   autopairs, autotag, the Gruvbox theme, completion, and DAP.
-9. `nvim-web-devicons` is initialized directly from `init.lua`.
+4. `mysetup.mason` creates/configures the app-specific Mason root.
+5. `mysetup.completion` configures Blink completion before LSP capabilities are
+   built.
+6. `mysetup.lsp` configures capabilities, LSP attach maps, servers, Mason
+   server installation, and CodeLLDB installation.
+7. `mysetup.formatting` configures Conform format-on-save.
+8. `mysetup.treesitter` configures parsers and highlighting.
+9. Feature modules configure Oil, fzf-lua, GitSigns, Harpoon, Lualine,
+   autopairs, autotag, the Gruvbox theme, and DAP.
+10. `nvim-web-devicons` is initialized directly from `init.lua`.
 
 All modules are loaded eagerly. There is no lazy-loading event model or plugin
 specification layer. Ordering in `init.lua` is therefore part of the runtime
@@ -58,23 +61,23 @@ contract.
 
 | Module | Responsibility | Notable side effects/dependencies |
 | --- | --- | --- |
-| `plugins.lua` | Install and load Git plugins | Shells out to `mkdir` and `git`; defines global helpers; depends on `$HOME` |
+| `plugins.lua` | Install and load Git plugins | Uses `stdpath("data")`; shells out to Git; pins fresh clones to immutable SHAs |
 | `options.lua` | `vim.opt` editor defaults | Uses `$HOME` for persistent undo directory |
 | `remap.lua` | Leader and general navigation/editing maps | Maps `<Tab>` and `<S-Tab>` globally, which also interact with completion |
-| `mason.lua` | Configure Mason install root | Defines another global `mkdir`; hard-codes `$HOME/.config/nvim/mason` |
-| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs |
-| `linter.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
+| `mason.lua` | Configure Mason install root | Uses the app-specific `stdpath("data")` directory |
+| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; ensures CodeLLDB |
+| `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |
-| `dap.lua` | C/C++ CodeLLDB debugging and DAP UI | Hard-codes Mason path; prompts once per session for executable |
+| `dap.lua` | C/C++ CodeLLDB debugging and DAP UI | Uses the app-specific Mason path; prompts once per session for executable |
 | `oil.lua` | File explorer behavior and view options | Large plugin-default-shaped configuration |
-| `fzf.lua` | Search, grep, diagnostics, Git pickers | Requires `fdfind`, `rg`, and Git; defines a global `getUnmerged` |
+| `fzf.lua` | Search, grep, diagnostics, Git pickers | Requires `fdfind`, `rg`, and Git; keeps picker helpers local |
 | `gitsigns.lua` | Git signs, inline blame, hunk maps | Defines maps before plugin setup; uses Unicode sign glyphs |
 | `harpoon.lua` | Marked-file navigation | Requires Harpoon 2 and Plenary |
-| `lualine.lua` | Statusline and tabline | Uses Nerd Font glyphs and current window width at startup |
-| `pairs.lua` | Automatic bracket pairing | Enables nvim-autopairs defaults |
+| `lualine.lua` | Statusline and tabline | Uses Nerd Font glyphs and dynamic window width |
+| `autopairs.lua` | Automatic bracket pairing | Enables nvim-autopairs defaults |
 | `autotag.lua` | HTML/XML tag close and rename | Requires Treesitter and nvim-ts-autotag |
-| `gruvbox.lua` | Theme configuration and application | Applies `colorscheme gruvbox` before and after setup |
+| `gruvbox.lua` | Theme configuration and application | Applies the configured colorscheme after setup |
 
 Modules generally do not return values. A module is an imperative setup script
 and is expected to be required once from `init.lua`.
@@ -84,15 +87,15 @@ and is expected to be required once from `init.lua`.
 ### Bootstrap Layer
 
 `install.sh` installs or verifies system prerequisites, downloads a pinned
-Neovim release, installs a Nerd Font, installs global npm tools, and creates a
-wrapper or symlink. It can coexist with another Neovim installation by using a
-different executable name and `NVIM_APPNAME`.
+Neovim release, installs a Nerd Font, installs locked local and global npm
+tools, and creates a wrapper or symlink. It can coexist with another Neovim
+installation by using a different executable name and `NVIM_APPNAME`.
 
 ### Plugin Layer
 
 `plugins.lua` is a custom shallow Git plugin manager. Plugin identity is the
-repository name under `pack/libs/start`; versions are passed as Git branches or
-tags and cloned with `--depth=1`. Existing directories are treated as already
+repository name under `<data>/site/pack/libs/start`; fresh clones fetch and
+check out immutable commit SHAs. Existing directories are treated as already
 installed and are not updated or checked out again.
 
 The declared plugin set includes UI/navigation, editing, Treesitter, LSP/Mason,
@@ -101,12 +104,12 @@ assumptions are expressed only as comments in the install list.
 
 ### Tooling Layer
 
-Mason is rooted at `~/.config/nvim/mason`. LSP servers are declared in
-`lsp.lua`; Mason-LSPConfig receives those server IDs and is asked to ensure the
+Mason is rooted at `<data>/mason`. LSP servers are declared in `lsp.lua`;
+Mason-LSPConfig receives those server IDs and is asked to ensure the
 corresponding tools are installed. The configured server IDs are `lua_ls`,
 `ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, and `cmake`.
-CodeLLDB is used by DAP and is expected in the same Mason root, but is not part
-of the LSP server list.
+CodeLLDB is also ensured through the Mason registry for DAP, but is not part of
+the LSP server list.
 
 Formatters are configured separately through Conform. `install.sh` installs
 `eslint_d` and `prettierd` globally with npm, while C/C++ formatting relies on
@@ -118,19 +121,14 @@ system/global npm state and the Neovim config.
 - Plugin modules use `require("plugin").setup({...})` directly at module scope.
 - Keymaps are colocated with the feature they control, except general maps in
   `remap.lua` and LSP attach maps in `lsp.lua`.
-- Configuration tables are mostly local, but helper functions in
-  `plugins.lua`, `mason.lua`, and `fzf.lua` leak into the global Lua namespace.
-- Paths are constructed from `$HOME` instead of Neovim's standard data/config
-  path APIs.
-- Shell commands are assembled as strings and executed through
-  `vim.fn.system` or shell commands in the installer.
-- Plugin versions are pinned inconsistently: many are tags, some are branches,
-  and some have no version at all.
-- Feature names are used as module names, but `linter.lua` configures a
-  formatter rather than a linter and `pairs.lua` configures autopairs.
-- Most maps lack `desc` metadata; DAP maps are the main exception.
-- Formatting style is mixed between single and double quotes and between
-  compact and expanded table syntax.
+- Configuration tables and helper functions are local to their feature modules.
+- Runtime paths use Neovim's standard data/config path APIs.
+- Git commands use argument lists through `vim.fn.system`; installer commands
+  quote paths and validate user-provided executable names.
+- Fresh plugin installs are pinned to immutable commit SHAs.
+- Feature module names describe their responsibilities.
+- Keymaps use `desc` metadata where configured.
+- Touched Lua modules use double quotes and consistent table formatting.
 
 ## Important Runtime Contracts
 
@@ -140,7 +138,7 @@ system/global npm state and the Neovim config.
 - `nvim-nio` must be installed for `nvim-dap-ui`.
 - Treesitter must be available for autotag setup and parser behavior.
 - The configured DAP adapter path is
-  `~/.config/nvim/mason/packages/codelldb/extension/adapter/codelldb`.
+  `<data>/mason/packages/codelldb/extension/adapter/codelldb`.
 - External commands used by the config include `git`, `fdfind`, `rg`, `clangd`,
   `clang-format`, npm-installed `prettierd`/`eslint_d`, and Mason-managed tools.
 - Neovim 0.11 behavior is assumed by `vim.lsp.config`, `vim.lsp.enable`, and
@@ -150,23 +148,15 @@ system/global npm state and the Neovim config.
 
 These are observations for planning, not changes made by this document:
 
-- `gruvbox.lua` applies the colorscheme before its setup and then applies it
-  again. The second application is the effective one.
-- Both `plugins.lua` and `mason.lua` define global `mkdir`; the latter replaces
-  the former when startup reaches Mason.
 - The plugin bootstrap does not update existing plugins, recover partial clones,
   or make installation atomic. It also shells out during every startup to check
   missing plugin directories.
-- `mason.lua` and `dap.lua` assume the standard config path even when
-  `install.sh` creates an isolated `NVIM_APPNAME` setup. This can make isolated
-  installations share or miss Mason state.
 - `<Tab>` and `<S-Tab>` are global buffer navigation maps while Blink also uses
   them for completion selection. Their behavior depends on which mapping is
   active in the current context.
-- `package.json` is Node project metadata, not a complete declaration of all
-  external tools required by the Neovim configuration.
-- Several comments and names contain small documentation inaccuracies, such as
-  the DAP UI dependency comment and the `linter.lua` filename.
+- `package.json` supplies the local TypeScript styled-components plugin; other
+  external formatters and language tools remain split between npm, Mason, and
+  system packages.
 
 ## Suggested Refactor Seams
 

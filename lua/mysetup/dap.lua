@@ -1,13 +1,12 @@
-local dap              = require("dap")
-local dapui            = require("dapui")
+local dap = require("dap")
+local dapui = require("dapui")
 
-local mason_root       = os.getenv("HOME") .. "/.config/nvim/mason"
-local codelldb         = mason_root .. "/packages/codelldb/extension/adapter/codelldb"
+local codelldb = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"
 
 -- Adapter
 dap.adapters.codelldb  = function(callback, _)
   if vim.fn.executable(codelldb) ~= 1 then
-    vim.notify("codelldb not found. Run :MasonInstall codelldb", vim.log.levels.ERROR)
+    vim.notify("codelldb not found. Mason should install it automatically", vim.log.levels.ERROR)
     return
   end
   callback({
@@ -21,7 +20,7 @@ dap.adapters.codelldb  = function(callback, _)
 end
 
 -- Cache executable path — ask once, remember for the session
-local _exe             = nil
+local executable_path = nil
 
 -- C / C++ launch configuration
 local cpp_configs      = {
@@ -29,13 +28,13 @@ local cpp_configs      = {
     name        = "Launch executable",
     type        = "codelldb",
     request     = "launch",
-    program     = function()
-      if not _exe or _exe == "" then
-        _exe = vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+    program = function()
+      if not executable_path or executable_path == "" then
+        executable_path = vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
       end
-      return _exe
+      return executable_path
     end,
-    cwd         = "${workspaceFolder}",
+    cwd = "${workspaceFolder}",
     stopOnEntry = false,
   },
 }
@@ -60,5 +59,5 @@ vim.keymap.set("n", "<leader>DB", dap.toggle_breakpoint, { desc = "DAP: Toggle b
 vim.keymap.set("n", "<leader>DU", dapui.toggle, { desc = "DAP: Toggle UI" })
 vim.keymap.set("n", "<leader>DE", dapui.eval, { desc = "DAP: Eval expression" })
 vim.keymap.set("n", "<leader>DP", function()
-  _exe = vim.fn.input("Path to executable: ", _exe or (vim.fn.getcwd() .. "/"), "file")
+  executable_path = vim.fn.input("Path to executable: ", executable_path or (vim.fn.getcwd() .. "/"), "file")
 end, { desc = "DAP: Set program path" })

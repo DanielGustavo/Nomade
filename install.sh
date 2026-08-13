@@ -11,6 +11,8 @@ FONT_NAME="FiraCode Nerd Font"
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
 #######################################
 ## utils
 #######################################
@@ -48,6 +50,9 @@ if command -v nvim &> /dev/null; then
     if [[ -z "$USER_EXEC_NAME" ]]; then
         log_error "Executable name cannot be empty."
     fi
+    if [[ ! "$USER_EXEC_NAME" =~ ^[A-Za-z0-9_-]+$ ]]; then
+        log_error "Executable name must contain only letters, numbers, underscores, and hyphens."
+    fi
     NVIM_EXEC_NAME=$USER_EXEC_NAME
     IS_CUSTOM=true
 fi
@@ -72,7 +77,7 @@ install_pkg "cmake"
 install_pkg "bear"
 # NOTE: After first nvim startup, cmake-language-server is installed by mason.
 # If it crashes (pygls 2.x incompatibility), run:
-#   ~/.config/nvim/mason/packages/cmake-language-server/venv/bin/pip install "pygls<2.0.0"
+#   <data>/mason/packages/cmake-language-server/venv/bin/pip install "pygls<2.0.0"
 
 if ! command -v "npm" &> /dev/null; then
   log_info "npm not found. Installing nodejs now..."
@@ -118,7 +123,7 @@ WRAPPER_PATH="/usr/local/bin/${NVIM_EXEC_NAME}"
 
 if [ "$IS_CUSTOM" = true ]; then
     log_info "Creating isolated executable at ${WRAPPER_PATH}..."
-    sudo bash -c "cat > ${WRAPPER_PATH}" <<EOF
+    sudo tee "${WRAPPER_PATH}" > /dev/null <<EOF
 #!/bin/bash
 # This variable isolates config to ~/.config/${NVIM_EXEC_NAME}
 export NVIM_APPNAME="${NVIM_EXEC_NAME}"
@@ -134,6 +139,10 @@ sudo chmod +x "${WRAPPER_PATH}"
 #######################################
 ## Additional Configs (FZF & NPM)
 #######################################
+# Local Node dependencies are required by the TypeScript LSP configuration.
+log_info "Installing local NPM dependencies..."
+npm ci --prefix "${SCRIPT_DIR}" || log_error "Failed to install local NPM dependencies."
+
 # FZF Config
 FZF_COMMAND="export FZF_DEFAULT_OPTS='--bind alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up'"
 if ! grep -q "FZF_DEFAULT_OPTS" ~/.bashrc; then
