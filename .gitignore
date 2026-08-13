@@ -1,7 +1,4 @@
 pack/
-
-!mason/
-mason/*
-!mason/registries
+mason/
 
 node_modules/
