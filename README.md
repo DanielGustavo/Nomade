@@ -20,10 +20,11 @@ exists, the script asks for a safe custom executable name and creates an
 isolated `NVIM_APPNAME` wrapper.
 
 On first startup, the configuration clones missing plugins at pinned revisions
-into Neovim's data directory at `<data>/site/pack/libs/start`, installs
-configured language servers and CodeLLDB through Mason, and uses the local
+into Neovim's data directory at `<data>/site/pack/libs/start`, installs the
+exact language-tool versions in `mason-packages.json`, and uses the local
 TypeScript plugin when available. Plugin and Mason directories are local
-generated state and are ignored by Git.
+generated state and are ignored by Git. The lockfile is validated before Mason
+installation; missing, extra, or malformed entries prevent Mason installation.
 
 ## Features
 
@@ -135,6 +136,7 @@ General mappings include:
 - `lua/mysetup/remap.lua`: General keymaps
 - `lua/mysetup/plugins.lua`: Plugin checkout list and bootstrap
 - `lua/mysetup/lsp.lua`: LSP servers and attach keymaps
+- `mason-packages.json`: Exact versions for Mason-managed packages
 - `lua/mysetup/mason.lua`: Mason root configuration
 - `lua/mysetup/treesitter.lua`: Parser and syntax configuration
 - `lua/mysetup/formatting.lua`: Conform formatter configuration

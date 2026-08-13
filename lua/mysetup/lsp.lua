@@ -53,6 +53,17 @@ local servers_to_configure = {
   },
 }
 
+local mason_lspconfig = require("mason-lspconfig")
+local mason_mappings = mason_lspconfig.get_mappings()
+local expected_mason_packages = { codelldb = true }
+
+for server_name in pairs(servers_to_configure) do
+  expected_mason_packages[mason_mappings.lspconfig_to_package[server_name]] = true
+end
+
+local mason_lock = require("mysetup.mason_lock")
+local mason_package_versions = mason_lock.load(expected_mason_packages)
+
 local styled_plugin_path = vim.fn.stdpath("config") .. "/node_modules/@styled/typescript-styled-plugin"
 if vim.fn.isdirectory(styled_plugin_path) == 1 then
   servers_to_configure.ts_ls.init_options = {
@@ -65,18 +76,24 @@ if vim.fn.isdirectory(styled_plugin_path) == 1 then
   }
 end
 
-require("mason-lspconfig").setup({
-  ensure_installed = vim.tbl_keys(servers_to_configure),
+mason_lspconfig.setup({
+  ensure_installed = mason_package_versions and mason_lock.versioned_specs(
+    servers_to_configure,
+    mason_package_versions,
+    mason_mappings
+  ) or {},
   automatic_enable = false,
 })
 
 local mason_registry = require("mason-registry")
-if not vim.tbl_contains(vim.v.argv, "--headless") then
+if mason_package_versions and not vim.tbl_contains(vim.v.argv, "--headless") then
   mason_registry.refresh(function(success)
     if not success then
       vim.notify("Could not refresh the Mason registry for CodeLLDB", vim.log.levels.WARN)
       return
     end
+
+    mason_lock.reconcile_installed(mason_package_versions, mason_registry)
 
     local ok, codelldb_package = pcall(mason_registry.get_package, "codelldb")
     if not ok then
@@ -85,7 +102,12 @@ if not vim.tbl_contains(vim.v.argv, "--headless") then
     end
 
     if not codelldb_package:is_installed() then
-      codelldb_package:install()
+      codelldb_package:install({ version = mason_package_versions.codelldb }, function(install_success, install_err)
+        if not install_success then
+          vim.notify(("Could not install codelldb@%s: %s"):format(mason_package_versions.codelldb, install_err),
+            vim.log.levels.ERROR)
+        end
+      end)
     end
   end)
 end

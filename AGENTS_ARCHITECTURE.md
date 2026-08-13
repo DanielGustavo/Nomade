@@ -24,6 +24,7 @@ and plugins.
 ├── package.json              # Node development dependency metadata
 ├── package-lock.json
 ├── .luarc.json               # Lua language-server/editor settings
+├── mason-packages.json       # Tracked Mason package version lockfile
 ├── README.md                 # User-facing feature and setup notes
 ├── mason/                    # Generated Mason state under stdpath("data"); ignored
 └── pack/libs/start/          # Runtime plugin checkout directory under data; ignored
@@ -65,7 +66,8 @@ contract.
 | `options.lua` | `vim.opt` editor defaults | Uses `$HOME` for persistent undo directory |
 | `remap.lua` | Leader and general navigation/editing maps | Maps `<Tab>` and `<S-Tab>` globally, which also interact with completion |
 | `mason.lua` | Configure Mason install root | Uses the app-specific `stdpath("data")` directory |
-| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; ensures CodeLLDB |
+| `mason_lock.lua` | Validate Mason package pins and reconcile installed versions | Reads the tracked `mason-packages.json`; uses Mason registry/package receipts |
+| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; validates and applies `mason-packages.json`; ensures CodeLLDB |
 | `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |
@@ -104,12 +106,15 @@ assumptions are expressed only as comments in the install list.
 
 ### Tooling Layer
 
-Mason is rooted at `<data>/mason`. LSP servers are declared in `lsp.lua`;
-Mason-LSPConfig receives those server IDs and is asked to ensure the
-corresponding tools are installed. The configured server IDs are `lua_ls`,
+Mason is rooted at `<data>/mason`. Exact Mason package versions are declared in
+the tracked `mason-packages.json` lockfile. LSP servers are declared in
+`lsp.lua`; Mason-LSPConfig receives versioned requests for the corresponding
+tools. The configured server IDs are `lua_ls`,
 `ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, and `cmake`.
 CodeLLDB is also ensured through the Mason registry for DAP, but is not part of
-the LSP server list.
+the LSP server list. Startup rejects incomplete, extra, or malformed lockfile
+entries and reconciles installed packages whose receipt version differs from the
+locked version. Unmanaged Mason packages are left untouched.
 
 Formatters are configured separately through Conform. `install.sh` installs
 `eslint_d` and `prettierd` globally with npm, while C/C++ formatting relies on
