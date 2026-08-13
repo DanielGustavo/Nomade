@@ -67,7 +67,7 @@ contract.
 | `remap.lua` | Leader and general navigation/editing maps | Maps `<Tab>` and `<S-Tab>` globally, which also interact with completion |
 | `mason.lua` | Configure Mason install root | Uses the app-specific `stdpath("data")` directory |
 | `mason_lock.lua` | Validate Mason package pins and reconcile installed versions | Reads the tracked `mason-packages.json`; uses Mason registry/package receipts |
-| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; validates and applies `mason-packages.json`; ensures CodeLLDB |
+| `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; delegates Mason package setup to `mason_lock.lua` |
 | `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |

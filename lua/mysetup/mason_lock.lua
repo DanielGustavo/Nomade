@@ -76,8 +76,54 @@ local function reconcile_installed(package_versions, registry)
   end
 end
 
-return {
-  load = load,
-  reconcile_installed = reconcile_installed,
-  versioned_specs = versioned_specs,
-}
+local function install_missing(package_versions, registry)
+  for package_name, expected_version in pairs(package_versions) do
+    local ok, package = pcall(registry.get_package, package_name)
+    if not ok then
+      notify(("Package %q is unavailable in the Mason registry"):format(package_name), vim.log.levels.ERROR)
+    elseif not package:is_installed() and not package:is_installing() then
+      package:install({ version = expected_version }, function(success, err)
+        if not success then
+          notify(("Could not install %s@%s: %s"):format(package_name, expected_version, err), vim.log.levels.ERROR)
+        end
+      end)
+    end
+  end
+end
+
+local function setup(servers, additional_package_names)
+  local mason_lspconfig = require("mason-lspconfig")
+  local mason_mappings = mason_lspconfig.get_mappings()
+  local expected_packages = {}
+
+  for server_name in pairs(servers) do
+    expected_packages[mason_mappings.lspconfig_to_package[server_name]] = true
+  end
+  for _, package_name in ipairs(additional_package_names) do
+    expected_packages[package_name] = true
+  end
+
+  local package_versions = load(expected_packages)
+  mason_lspconfig.setup({
+    ensure_installed = package_versions and versioned_specs(servers, package_versions, mason_mappings) or {},
+    automatic_enable = false,
+  })
+
+  if not package_versions or vim.tbl_contains(vim.v.argv, "--headless") then
+    return
+  end
+
+  local registry = require("mason-registry")
+  registry.refresh(function(success)
+    if not success then
+      notify("Could not refresh the Mason registry", vim.log.levels.WARN)
+      return
+    end
+
+    reconcile_installed(package_versions, registry)
+
+    install_missing(package_versions, registry)
+  end)
+end
+
+return setup
