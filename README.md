@@ -1,113 +1,143 @@
 # Nomade: Neovim Configuration
 
-This is a personal Neovim configuration designed to be minimalistic, modern, and efficient for setup. It aims to provide a smooth and productive coding experience.
+Nomade is a personal Neovim configuration for coding workflows. It uses eager
+Lua modules, a small custom Git plugin bootstrap, Mason-managed language tools,
+and Neovim 0.11 LSP APIs.
 
----
+## Installation
 
-## 📦 Plugin Overview
+Run:
 
-This configuration utilizes several plugins to enhance functionality. Here's a breakdown:
+```bash
+./install.sh
+```
 
-### 📁 File & Navigation
+The installer installs or verifies the system dependencies, Neovim `v0.11.5`,
+FiraCode Nerd Font, Node/npm, and the global `eslint_d` and `prettierd` npm
+packages. It creates `/usr/local/bin/nvim` unless another Neovim executable is
+already present. When another installation exists, the script asks for a custom
+executable name and creates an isolated `NVIM_APPNAME` wrapper.
 
-*   **`oil.nvim`**: A powerful file explorer that replaces the default Netrw. It provides a buffer-based interface for navigating directories and performing file operations.
-    *   **Keybindings:**
-        *   `<leader>e`: Opens the Oil file explorer.
-*   **`harpoon`**: Allows you to mark frequently used files and quickly navigate between them.
-    *   **Keybindings:**
-        *   `<leader>ha`: Adds the current file to the Harpoon list.
-        *   `<leader>hs`: Toggles the Harpoon quick menu.
-        *   `<leader>0` to `<leader>9`: Selects the Nth marked file.
-*   **`fzf-lua`**: Integrates fzf, a fuzzy finder, for efficient searching of files, buffers, commands, and more.
-    *   **Keybindings:**
-        *   `<leader>f`: Opens fzf file search.
-        *   `<leader>ps`: Live grep search.
-        *   `<F4>`: LSP code actions.
-        *   `<leader>pd`: Document diagnostics.
-        *   `<leader>gg`: Git status.
-        *   `<leader>gu`: View unmerged git files.
+On first startup, the configuration clones missing plugins into
+`~/.config/nvim/pack/libs/start` and installs configured language servers through
+Mason. Plugin and Mason directories are local generated state and are ignored
+by Git.
 
-### 🛠️ Core Development & LSP
+## Features
 
-*   **`mason.nvim`**: Simplifies the installation and management of Language Servers (LSPs), Linters, and Formatters. It ensures that necessary development tools are readily available.
-*   **`nvim-treesitter`**: Provides advanced code parsing for improved syntax highlighting, code folding, and semantic analysis. It ensures accurate and context-aware code understanding.
-    *   **Configured Languages:** `javascript`, `typescript`, `lua`, `vim`, `vimdoc`, `query`, `markdown`, `markdown_inline`.
-*   **`lsp.lua`**: Configures Language Server Protocol (LSP) clients for various languages, enabling features like code completion, go-to-definition, and diagnostics.
-    *   **Supported Servers:** `lua-language-server`, `typescript-language-server`, `prettierd`, `jsonlint`, `eslint_d`.
-    *   **Keybindings (when LSP is attached):**
-        *   `K`: Show hover information.
-        *   `gd`: Go to definition.
-        *   `gr`: Go to references.
-        *   `<leader>rn`: Rename symbol.
-        *   `[d`: Go to next diagnostic.
-        *   `]d`: Go to previous diagnostic.
+### Navigation
 
-### ⌨️ Quality of Life
+`oil.nvim` is the default file explorer:
 
-*   **`mini.pairs`**: Enhances typing by automatically inserting and managing pairs of brackets, parentheses, and quotes.
-*   **`nvim-ts-autotag`**: Automatically closes and renames HTML/XML tags, leveraging Treesitter for accurate parsing. This is particularly useful for web development.
-*   **`gitsigns.nvim`**: Displays Git status information (lines added, modified, deleted) directly in the sign column, providing immediate feedback on code changes.
-    *   **Keybindings:**
-        *   `<leader>th`: Preview hunk changes.
-        *   `<leader>rh`: Reset hunk changes.
+- `<leader>e`: Open Oil
+- `<leader>f`: Find files with fzf-lua
+- `<leader>ps`: Live grep
+- `<leader>gg`: Git status picker
+- `<leader>gu`: List unmerged Git files
+- `<leader>ha`: Add the current file to Harpoon
+- `<leader>hs`: Toggle the Harpoon menu
+- `<leader>0` through `<leader>9`: Select a Harpoon entry
 
-### 🎨 Status Line & Aesthetics
+### LSP And Completion
 
-*   **`ellisonleao/gruvbox.nvim`**: Implements the popular Gruvox color scheme, optimized for Neovim.
-*   **`lualine.nvim`**: A highly customizable and fast status line plugin that displays important information about the current buffer and Neovim state.
+The configured LSP server IDs are:
 
----
+- `lua_ls`
+- `ts_ls`
+- `jsonls`
+- `eslint`
+- `prismals`
+- `tailwindcss`
+- `clangd`
+- `cmake`
 
-## 🚀 Getting Started
+When an LSP client is attached:
 
-1.  **Run the installation script:**
+- `K`: Show hover information
+- `gd`: Go to definition
+- `gr`: Go to references
+- `<leader>rn`: Rename the symbol
+- `[d`: Go to the next diagnostic
+- `]d`: Go to the previous diagnostic
+- `<F4>`: Show LSP code actions through fzf-lua
 
-    ```bash
-    ./install.sh
-    ```
+`blink.cmp` provides completion from LSP, filesystem paths, snippets, and the
+current buffer. Its main completion mappings are `<Tab>` and `<S-Tab>` to move,
+`<C-k>` to show or hide, and `<CR>` to accept.
 
-    This script will install Neovim, required dependencies, and a Nerd Font.
+### Syntax, Formatting, And Editing
 
-2.  **Configure your terminal:**
+Treesitter is configured for:
 
-    After the installation, set a Nerd Font (e.g., "FiraCode Nerd Font") in your terminal emulator settings.
+`javascript`, `typescript`, `lua`, `vim`, `vimdoc`, `query`, `markdown`,
+`markdown_inline`, `styled`, `c`, `cpp`, and `cmake`.
 
-3.  **Source your bashrc:**
+Conform formats on save with:
 
-    Run `source ~/.bashrc` or restart your terminal after the installation to ensure the Neovim path is set correctly.
+- JavaScript and TypeScript: `prettierd`
+- C and C++: `clang-format`
 
+`nvim-autopairs` handles bracket and quote pairs. `nvim-ts-autotag` closes and
+renames HTML/XML-style tags using Treesitter.
 
-## ⚙️ Configuration Options
+### Git And Debugging
 
-### General Options (`lua/mysetup/options.lua`)
+`gitsigns.nvim` displays Git changes and current-line blame:
 
-*   `autoindent`, `smartindent`: Enable smart auto-indentation.
-*   `expandtab`, `tabstop = 2`, `shiftwidth = 2`: Configure tab behavior for 2-space indentation.
-*   `number`, `relativenumber`: Show absolute and relative line numbers.
-*   `swapfile = false`, `backup = false`: Disable swap and backup files.
-*   `undodir`, `undofile = true`: Enable persistent undo history.
-*   `hlsearch = false`, `incsearch = true`: Disable highlighting for search results but enable incremental search.
+- `<leader>th`: Preview the current hunk
+- `<leader>rh`: Reset the current hunk
 
-### Keybindings (`lua/mysetup/remap.lua`)
+The DAP setup targets C and C++ through CodeLLDB:
 
-*   **Leader Key**: The leader key is set to space (`<leader>`).
-*   **File Explorer**: `<leader>e` opens `oil.nvim`.
-*   **Buffer Navigation**: `<Tab>` for next buffer, `<S-Tab>` for previous buffer.
-*   **Scrolling**: `<C-j>` and `<C-k>` for smoother scrolling, and `zz` to center the screen.
-*   **Pasting**: `<leader>p` pastes without yanking.
+- `<leader>DC`: Continue or start debugging
+- `<leader>DO`: Step over
+- `<leader>DI`: Step into
+- `<leader>DQ`: Step out
+- `<leader>DB`: Toggle a breakpoint
+- `<leader>DU`: Toggle the DAP UI
+- `<leader>DE`: Evaluate an expression
+- `<leader>DP`: Set the executable path
 
-### Color Scheme (`lua/mysetup/gruvbox.lua`)
+The CodeLLDB adapter is expected at
+`~/.config/nvim/mason/packages/codelldb/extension/adapter/codelldb`.
 
-*   The `gruvbox` color scheme is applied with various options enabled (e.g., bold, underline, italic emphasis).
+### Interface
 
----
+The Gruvbox colorscheme is enabled with dark background settings. Lualine
+provides the statusline and a buffer tabline. A Nerd Font is recommended for
+plugin and statusline icons.
 
-## ✨ Customization
+## General Settings And Keymaps
 
-Feel free to modify the configuration files in `lua/mysetup/` to suit your preferences. You can:
+The leader key is space. Current editor defaults include:
 
-*   Adjust editor options in `options.lua`.
-*   Add or modify keybindings in `remap.lua`.
-*   Configure plugins by editing their respective files (e.g., `lsp.lua`, `treesitter.lua`).
-*   Install additional language servers or tools via `:Mason`.
+- Two-space indentation with `expandtab`, `tabstop = 2`, and `shiftwidth = 2`
+- Absolute and relative line numbers
+- Persistent undo at `~/.vim/undodir`
+- Disabled swap and backup files
+- Incremental search with search-result highlighting disabled
 
+General mappings include:
+
+- `<leader>d`: Delete the current buffer
+- `<Tab>` / `<S-Tab>`: Next / previous buffer outside completion
+- `<C-j>` / `<C-k>`: Scroll down / up by one screen line
+- `<C-d>` / `<C-u>`: Scroll down / up and center the cursor
+- `<leader>p` in visual mode: Paste without overwriting the unnamed register
+- `op`, `oi`, and `oo`: Add lines below, above, and below respectively
+
+## Configuration Layout
+
+- `init.lua`: Startup composition order
+- `lua/mysetup/options.lua`: Editor options
+- `lua/mysetup/remap.lua`: General keymaps
+- `lua/mysetup/plugins.lua`: Plugin checkout list and bootstrap
+- `lua/mysetup/lsp.lua`: LSP servers and attach keymaps
+- `lua/mysetup/mason.lua`: Mason root configuration
+- `lua/mysetup/treesitter.lua`: Parser and syntax configuration
+- `lua/mysetup/linter.lua`: Conform formatter configuration
+- Other files in `lua/mysetup/`: Individual plugin configuration
+- `install.sh`: OS-level installation and Neovim distribution setup
+
+For architecture, startup ordering, dependencies, and refactor guidance, read
+[`AGENTS_ARCHITECTURE.md`](AGENTS_ARCHITECTURE.md).
