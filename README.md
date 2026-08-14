@@ -97,8 +97,7 @@ Conform formats on save with:
 - Lua: `stylua` when the project has a `.stylua.toml` or `stylua.toml` config
 - Python: `ruff format` when the project has `pyproject.toml`, `ruff.toml`, or
   `uv.lock`
-- Java: the configured Spotless or formatter-maven-plugin task when present,
-  otherwise Mason's `google-java-format`
+- Java: formatting through nvim-java's JDTLS integration
 
 This repository's Lua style is defined in [`.stylua.toml`](.stylua.toml). Lua
 diagnostics are provided by the `lua_ls` language server.
@@ -138,29 +137,38 @@ Ruff, and debugpy for editor infrastructure.
 
 ### Java
 
-Java projects use `nvim-jdtls` with a single workspace rooted at the nearest
-`.git`, `mvnw`, or `gradlew`, which keeps multi-module projects on one language
-server. JDK selection follows `JAVA_HOME`, then mise or asdf's selected Java.
-JDTLS itself requires a Java 21 runtime; project language levels remain managed
-by Maven or Gradle.
+Java projects use `nvim-java`, which configures JDTLS, Java test/debug bundles,
+Spring Boot tooling, formatting, running, and runtime switching. It supports
+Maven and Gradle projects, including multi-module workspaces.
 
-Neotest supports JUnit 4, JUnit 5, and TestNG through `neotest-java`:
+Useful nvim-java commands include:
 
-- `<leader>tt`: Run the nearest test
-- `<leader>tf`: Run the current test file
-- `<leader>td`: Debug the nearest test method
+- `:JavaTestRunCurrentClass`
+- `:JavaTestRunCurrentMethod`
+- `:JavaTestDebugCurrentClass`
+- `:JavaTestDebugCurrentMethod`
+- `:JavaRunnerRunMain`
+- `:JavaSettingsChangeRuntime`
+- `:JavaRefactorExtractMethod`
+
+Java buffer mappings include:
+
+- `<leader>jb`: Build workspace
+- `<leader>jc`: Clean workspace
+- `<leader>jr`: Run the main class
+- `<leader>tr`: Run the current test method
+- `<leader>td`: Debug the current test method
 - `<leader>tD`: Debug the current test class
-- `<leader>jo`: Organize imports
 
-Java build tools prefer project wrappers and run in a terminal:
+Project scaffolding commands open an interactive terminal:
 
-- `<leader>jb`: Build the project
-- `<leader>jt`: Run project tests
-- `<leader>jc`: Clean the project
+- `:JavaMavenInit`: Run Maven Archetype generation
+- `:JavaGradleInit`: Run `gradle init`
+- `:JavaSpringInit`: Generate a Spring Boot project through Spring Initializr
 
-JDTLS, Java debug/test bundles, and `google-java-format` are locked in
-`mason-packages.json`. JDKs, mise/asdf, Maven, and Gradle remain project or
-system-managed prerequisites; missing prerequisites produce a one-time warning.
+`nvim-java` manages its JDTLS, test/debug, Spring Boot, Lombok, and compatible
+JDK tooling separately from Mason. Maven, Gradle, `curl`, and `unzip` remain
+system-managed prerequisites for project tasks.
 
 ### Git And Debugging
 
@@ -169,7 +177,7 @@ system-managed prerequisites; missing prerequisites produce a one-time warning.
 - `<leader>th`: Preview the current hunk
 - `<leader>rh`: Reset the current hunk
 
-The DAP setup targets C and C++ through CodeLLDB and Java tests through JDTLS:
+The DAP setup targets C and C++ through CodeLLDB; nvim-java configures Java DAP:
 
 - `<leader>DC`: Continue or start debugging
 - `<leader>DO`: Step over

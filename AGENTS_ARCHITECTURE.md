@@ -53,8 +53,8 @@ Neovim evaluates `init.lua` in this order:
 8. `mysetup.treesitter` configures parsers and highlighting.
 9. `mysetup.python` configures Python environment selection, Neotest, and an
    interactive Python cell REPL.
-10. `mysetup.java` starts JDTLS on Java buffers, configures Java test/debug
-    maps, and provides Maven/Gradle terminal tasks.
+10. `mysetup.java` configures nvim-java and provides project scaffolding
+     commands.
 11. Feature modules configure Oil, fzf-lua, GitSigns, Harpoon, Lualine,
     autopairs, autotag, the Gruvbox theme, and DAP.
 12. `nvim-web-devicons` is initialized directly from `init.lua`.
@@ -75,7 +75,7 @@ contract.
 | `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; delegates Mason package setup to `mason_lock.lua` |
 | `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
 | `python.lua` | Python environments, tests, and REPL | Uses venv-selector, Neotest, and Iron; project commands inherit the selected environment |
-| `java.lua` | JDTLS, Java tests/debugging, and Maven/Gradle tasks | Uses nvim-jdtls, Neotest Java, Mason Java bundles, and mise/asdf or `JAVA_HOME` |
+| `java.lua` | nvim-java setup and Maven/Gradle/Spring project scaffolding | Uses nvim-java, Spring Boot Tools, and terminal commands |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |
 | `dap.lua` | C/C++ CodeLLDB debugging and DAP UI | Uses the app-specific Mason path; prompts once per session for executable |
@@ -129,18 +129,17 @@ the tracked `mason-packages.json` lockfile. LSP servers are declared in
 tools. The configured Mason-managed server IDs are `lua_ls`,
 `ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, `cmake`,
 `pyright`, and `ruff`.
-JDTLS is started by `java.lua` because its workspace must be rooted at the
-repository rather than an individual module; its package and Java debug/test
-bundles are additional locked Mason packages.
+nvim-java owns JDTLS, Java test/debug bundles, Spring Boot Tools, Lombok, and its
+compatible JDK through its own package manager. These Java packages are not
+duplicated in the Mason lockfile.
 Biome is configured separately as an external `biome lsp-proxy` server.
 CodeLLDB is also ensured through the Mason registry for DAP, but is not part of
 the LSP server list. Startup rejects incomplete, extra, or malformed lockfile
 entries and reconciles installed packages whose receipt version differs from the
 locked version. Unmanaged Mason packages are left untouched.
 
-Formatters are configured separately through Conform. Java uses project Spotless
-or formatter-maven-plugin tasks before falling back to Mason's
-`google-java-format`. Mason manages Stylua,
+Formatters are configured separately through Conform. Java delegates formatting
+to JDTLS through nvim-java. Mason manages Stylua,
 Ruff, and debugpy for editor infrastructure, while `install.sh` installs
 `eslint_d`, `prettierd`, and Biome globally with npm, and C/C++ formatting
 relies on `clang-format` being available. Conform only runs the configured
@@ -173,11 +172,9 @@ Pytest and notebook runtimes remain project dependencies managed by uv.
 - The configured DAP adapter paths are
   `<data>/mason/packages/codelldb/extension/adapter/codelldb` and
   `<data>/mason/packages/debugpy/venv/bin/python`.
-- Java DAP bundles are loaded from `<data>/mason/packages/java-debug-adapter`
-  and `<data>/mason/packages/java-test` by `nvim-jdtls`.
 - External commands used by the config include `git`, `fdfind`, `rg`, `uv`,
-  `clangd`, `clang-format`, `java`, Maven/Gradle wrappers, npm-installed
-  `prettierd`/`eslint_d`/`biome`, and Mason-managed tools.
+  `clangd`, `clang-format`, `java`, Maven/Gradle, `curl`, `unzip`,
+  npm-installed `prettierd`/`eslint_d`/`biome`, and Mason-managed tools.
 - Neovim 0.11 behavior is assumed by `vim.lsp.config`, `vim.lsp.enable`, and
   the pinned Neovim version in `install.sh`.
 

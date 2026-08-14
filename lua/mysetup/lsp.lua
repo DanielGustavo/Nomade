@@ -92,10 +92,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 require("mysetup.mason_lock")(servers_to_configure, {
   "codelldb",
   "debugpy",
-  "google-java-format",
-  "java-debug-adapter",
-  "java-test",
-  "jdtls",
   "stylua",
 })
 

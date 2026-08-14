@@ -16,7 +16,6 @@ neotest.setup({
       python = python,
       runner = "pytest",
     }),
-    require("neotest-java")({}),
   },
 })
 
