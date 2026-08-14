@@ -2,6 +2,7 @@ local dap = require("dap")
 local dapui = require("dapui")
 
 local codelldb = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"
+local debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
 
 -- Adapter
 dap.adapters.codelldb = function(callback, _)
@@ -41,6 +42,27 @@ local cpp_configs = {
 
 dap.configurations.cpp = cpp_configs
 dap.configurations.c = cpp_configs
+
+dap.adapters.python = {
+  type = "executable",
+  command = debugpy,
+  args = { "-m", "debugpy.adapter" },
+}
+
+dap.configurations.python = {
+  {
+    name = "Launch current file",
+    type = "python",
+    request = "launch",
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+    justMyCode = true,
+    pythonPath = function()
+      local ok, selector = pcall(require, "venv-selector")
+      return ok and selector.python() or nil
+    end,
+  },
+}
 
 -- UI
 dapui.setup()

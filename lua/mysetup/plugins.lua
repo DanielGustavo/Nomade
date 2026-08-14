@@ -31,14 +31,14 @@ local function cloneRepo(plugin, version)
     return false
   end
 
-  vim.fn.system({ "git", "fetch", "--depth=1", "origin", version })
+  vim.fn.system({ "git", "-C", targetDir, "fetch", "--depth=1", "origin", version })
   if vim.v.shell_error ~= 0 then
     print("Failed to fetch the pinned plugin revision: " .. version)
     vim.fn.delete(targetDir, "rf")
     return false
   end
 
-  vim.fn.system({ "git", "checkout", "--detach", version })
+  vim.fn.system({ "git", "-C", targetDir, "checkout", "--detach", version })
   if vim.v.shell_error ~= 0 then
     print("Failed to check out the pinned plugin revision: " .. version)
     vim.fn.delete(targetDir, "rf")
@@ -92,3 +92,7 @@ installPlugin("stevearc/conform.nvim", "3543d000dafbc41cc7761d860cfdb24e82154f75
 installPlugin("nvim-neotest/nvim-nio", "21f5324bfac14e22ba26553caf69ec76ae8a7662")
 installPlugin("mfussenegger/nvim-dap", "6a5bba0ddea5d419a783e170c20988046376090d")
 installPlugin("rcarriga/nvim-dap-ui", "f7d75cca202b52a60c520ec7b1ec3414d6e77b0f")
+installPlugin("linux-cultist/venv-selector.nvim", "cc4bb3975de8835291f9bb45889e96c6b2795fc4")
+installPlugin("nvim-neotest/neotest", "1c529a1ef9c82e8131e872368415cecc2bb86ea2")
+installPlugin("nvim-neotest/neotest-python", "1b56ca4ba51c6014f986d6548ee629bdc95589d1")
+installPlugin("Vigemus/iron.nvim", "c7f8047d964fb155a701b7c860fa3d4143d713c5")

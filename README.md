@@ -65,6 +65,7 @@ The configured LSP server IDs are:
 - `tailwindcss`
 - `clangd`
 - `cmake`
+- `pyright` and `ruff` for Python projects
 
 When an LSP client is attached:
 
@@ -93,6 +94,8 @@ Conform formats on save with:
   config, otherwise `prettierd` when the project has a Prettier config
 - C and C++: `clang-format` when the project has a `.clang-format` config
 - Lua: `stylua` when the project has a `.stylua.toml` or `stylua.toml` config
+- Python: `ruff format` when the project has `pyproject.toml`, `ruff.toml`, or
+  `uv.lock`
 
 This repository's Lua style is defined in [`.stylua.toml`](.stylua.toml). Lua
 diagnostics are provided by the `lua_ls` language server.
@@ -103,6 +106,32 @@ linter fallback configuration is used.
 
 `nvim-autopairs` handles bracket and quote pairs. `nvim-ts-autotag` closes and
 renames HTML/XML-style tags using Treesitter.
+
+### Python
+
+Python environments are discovered and activated with `venv-selector.nvim`,
+including uv-managed `.venv` directories. Use `<leader>pv` to select an
+environment manually. Pyright and Ruff provide language diagnostics, and
+Ruff formats Python on save.
+
+Pytest is integrated through Neotest:
+
+- `<leader>tt`: Run the nearest test
+- `<leader>tf`: Run the current file
+- `<leader>to`: Show test output
+- `<leader>ts`: Toggle the test summary
+
+Python files can also use an interactive `# %%` cell workflow through
+`iron.nvim`:
+
+- `<leader>rr`: Toggle the Python REPL
+- `<leader>sf`: Send the current file
+- `<leader>sl`: Send the current line
+- `<leader>sb`: Send the current code block
+
+Project commands run through the selected environment. Install `pytest` and
+any notebook kernel in the project's uv environment; Mason supplies Pyright,
+Ruff, and debugpy for editor infrastructure.
 
 ### Git And Debugging
 
@@ -124,6 +153,8 @@ The DAP setup targets C and C++ through CodeLLDB:
 
 CodeLLDB is installed through Mason. Its adapter path follows Neovim's data
 directory, so alternate `NVIM_APPNAME` installations do not share DAP state.
+Python debugging adds a current-file launch configuration using Mason's
+debugpy adapter and the selected environment.
 
 ### Interface
 
@@ -161,6 +192,7 @@ General mappings include:
 - `lua/mysetup/mason.lua`: Mason root configuration
 - `lua/mysetup/treesitter.lua`: Parser and syntax configuration
 - `lua/mysetup/formatting.lua`: Conform formatter configuration
+- `lua/mysetup/python.lua`: Python environments, tests, and REPL workflow
 - `lua/mysetup/autopairs.lua`: Automatic bracket pairing
 - Other files in `lua/mysetup/`: Individual plugin configuration
 - `install.sh`: Interactive and command-line installation phase dispatcher

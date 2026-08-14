@@ -3,9 +3,12 @@
   "cmake-language-server": "0.1.11",
   "codelldb": "v1.12.1",
   "eslint-lsp": "4.10.0",
+  "debugpy": "1.8.21",
   "json-lsp": "4.10.0",
   "lua-language-server": "3.17.1",
+  "pyright": "1.1.411",
   "prisma-language-server": "31.5.35",
+  "ruff": "0.16.2",
   "stylua": "v2.5.2",
   "tailwindcss-language-server": "0.14.29",
   "typescript-language-server": "5.1.3"

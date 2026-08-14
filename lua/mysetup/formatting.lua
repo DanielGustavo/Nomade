@@ -9,6 +9,7 @@ require("conform").setup({
     typescriptreact = { "biome", "prettierd", stop_after_first = true },
     c = { "clang-format" },
     cpp = { "clang-format" },
+    python = { "ruff_format" },
   },
   formatters = {
     stylua = {
@@ -32,6 +33,16 @@ require("conform").setup({
     ["clang-format"] = {
       condition = function(_, context)
         return project_config.has(context.buf, { [[\v^[_.]clang-format$]] })
+      end,
+    },
+    ruff_format = {
+      condition = function(_, context)
+        return project_config.has(context.buf, {
+          [[\v^pyproject\.toml$]],
+          [[\v^ruff\.toml$]],
+          [[\v^\.ruff\.toml$]],
+          [[\v^uv\.lock$]],
+        })
       end,
     },
   },

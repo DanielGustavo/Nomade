@@ -6,6 +6,7 @@ require("mysetup.options")
 -- libs
 require("mysetup.mason")
 require("mysetup.completion")
+require("mysetup.python")
 require("mysetup.lsp")
 require("mysetup.formatting")
 require("mysetup.treesitter")

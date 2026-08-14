@@ -10,7 +10,7 @@ reference when a documented contract changes.
 
 This repository is a personal Neovim distribution intended to provide a
 minimal, coding-focused environment. It supports JavaScript/TypeScript, Lua,
-JSON, Prisma, Tailwind CSS, C/C++, and CMake workflows. The configuration also
+JSON, Prisma, Tailwind CSS, Python, C/C++, and CMake workflows. The configuration also
 contains installation scripts for Neovim, system tools, fonts, language tools,
 and plugins.
 
@@ -51,9 +51,11 @@ Neovim evaluates `init.lua` in this order:
    server installation, and CodeLLDB installation.
 7. `mysetup.formatting` configures Conform format-on-save.
 8. `mysetup.treesitter` configures parsers and highlighting.
-9. Feature modules configure Oil, fzf-lua, GitSigns, Harpoon, Lualine,
+9. `mysetup.python` configures Python environment selection, Neotest, and an
+   interactive Python cell REPL.
+10. Feature modules configure Oil, fzf-lua, GitSigns, Harpoon, Lualine,
    autopairs, autotag, the Gruvbox theme, and DAP.
-10. `nvim-web-devicons` is initialized directly from `init.lua`.
+11. `nvim-web-devicons` is initialized directly from `init.lua`.
 
 All modules are loaded eagerly. There is no lazy-loading event model or plugin
 specification layer. Ordering in `init.lua` is therefore part of the runtime
@@ -70,6 +72,7 @@ contract.
 | `mason_lock.lua` | Validate Mason package pins and reconcile installed versions | Reads the tracked `mason-packages.json`; uses Mason registry/package receipts |
 | `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; delegates Mason package setup to `mason_lock.lua` |
 | `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
+| `python.lua` | Python environments, tests, and REPL | Uses venv-selector, Neotest, and Iron; project commands inherit the selected environment |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |
 | `dap.lua` | C/C++ CodeLLDB debugging and DAP UI | Uses the app-specific Mason path; prompts once per session for executable |
@@ -121,21 +124,22 @@ Mason is rooted at `<data>/mason`. Exact Mason package versions are declared in
 the tracked `mason-packages.json` lockfile. LSP servers are declared in
 `lsp.lua`; Mason-LSPConfig receives versioned requests for the corresponding
 tools. The configured Mason-managed server IDs are `lua_ls`,
-`ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, and `cmake`.
+`ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, `cmake`,
+`pyright`, and `ruff`.
 Biome is configured separately as an external `biome lsp-proxy` server.
 CodeLLDB is also ensured through the Mason registry for DAP, but is not part of
 the LSP server list. Startup rejects incomplete, extra, or malformed lockfile
 entries and reconciles installed packages whose receipt version differs from the
 locked version. Unmanaged Mason packages are left untouched.
 
-Formatters are configured separately through Conform. Mason manages Stylua for
-Lua formatting, while `install.sh` installs `eslint_d`, `prettierd`, and Biome
-globally with npm, and C/C++ formatting relies on `clang-format` being
-available. Conform only runs the configured formatter when the project contains
-that formatter's config; LSP formatting is not a fallback. The ESLint and Biome
-servers similarly require their project config before they start. Lua
-diagnostics continue to come from `lua_ls`. This means formatter ownership is
-split between Mason, system/global npm state, and project configuration.
+Formatters are configured separately through Conform. Mason manages Stylua,
+Ruff, and debugpy for editor infrastructure, while `install.sh` installs
+`eslint_d`, `prettierd`, and Biome globally with npm, and C/C++ formatting
+relies on `clang-format` being available. Conform only runs the configured
+formatter when the project contains that formatter's config; LSP formatting is
+not a fallback. The ESLint and Biome servers similarly require their project
+config before they start. Lua diagnostics continue to come from `lua_ls`.
+Pytest and notebook runtimes remain project dependencies managed by uv.
 
 ## Configuration Patterns
 
@@ -158,10 +162,12 @@ split between Mason, system/global npm state, and project configuration.
 - `mason.nvim` and `mason-lspconfig.nvim` must be loaded before LSP setup.
 - `nvim-nio` must be installed for `nvim-dap-ui`.
 - Treesitter must be available for autotag setup and parser behavior.
-- The configured DAP adapter path is
-  `<data>/mason/packages/codelldb/extension/adapter/codelldb`.
-- External commands used by the config include `git`, `fdfind`, `rg`, `clangd`,
-  `clang-format`, npm-installed `prettierd`/`eslint_d`/`biome`, and Mason-managed tools.
+- The configured DAP adapter paths are
+  `<data>/mason/packages/codelldb/extension/adapter/codelldb` and
+  `<data>/mason/packages/debugpy/venv/bin/python`.
+- External commands used by the config include `git`, `fdfind`, `rg`, `uv`,
+  `clangd`, `clang-format`, npm-installed `prettierd`/`eslint_d`/`biome`, and
+  Mason-managed tools.
 - Neovim 0.11 behavior is assumed by `vim.lsp.config`, `vim.lsp.enable`, and
   the pinned Neovim version in `install.sh`.
 

@@ -41,6 +41,15 @@ local servers_to_configure = {
   cmake = {
     root_markers = { "CMakeLists.txt", ".git" },
   },
+
+  pyright = {
+    root_markers = { "pyproject.toml", "uv.lock", "pytest.ini", "setup.cfg", "tox.ini", ".git" },
+  },
+
+  ruff = {
+    cmd = { "ruff", "server" },
+    root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", "uv.lock", ".git" },
+  },
 }
 
 local styled_plugin_path = vim.fn.stdpath("config") .. "/node_modules/@styled/typescript-styled-plugin"
@@ -80,7 +89,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-require("mysetup.mason_lock")(servers_to_configure, { "codelldb", "stylua" })
+require("mysetup.mason_lock")(servers_to_configure, { "codelldb", "debugpy", "stylua" })
 
 for server_name, config in pairs(servers_to_configure) do
   vim.lsp.config(server_name, config)
