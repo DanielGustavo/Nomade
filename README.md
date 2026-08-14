@@ -92,6 +92,10 @@ Conform formats on save with:
 - JavaScript, JSX, TypeScript, and TSX: `biome` when the project has a Biome
   config, otherwise `prettierd` when the project has a Prettier config
 - C and C++: `clang-format` when the project has a `.clang-format` config
+- Lua: `stylua` when the project has a `.stylua.toml` or `stylua.toml` config
+
+This repository's Lua style is defined in [`.stylua.toml`](.stylua.toml). Lua
+diagnostics are provided by the `lua_ls` language server.
 
 The ESLint language server is likewise started only for projects with an ESLint
 config. Biome provides linting when its config is present. No formatter or

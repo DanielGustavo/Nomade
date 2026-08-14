@@ -128,13 +128,14 @@ the LSP server list. Startup rejects incomplete, extra, or malformed lockfile
 entries and reconciles installed packages whose receipt version differs from the
 locked version. Unmanaged Mason packages are left untouched.
 
-Formatters are configured separately through Conform. `install.sh` installs
-`eslint_d`, `prettierd`, and Biome globally with npm, while C/C++ formatting
-relies on `clang-format` being available. Conform only runs the configured
-formatter when the project contains that formatter's config; LSP formatting is
-not a fallback. The ESLint and Biome servers similarly require their project
-config before they start. This means formatter ownership is split between
-system/global npm state and project configuration.
+Formatters are configured separately through Conform. Mason manages Stylua for
+Lua formatting, while `install.sh` installs `eslint_d`, `prettierd`, and Biome
+globally with npm, and C/C++ formatting relies on `clang-format` being
+available. Conform only runs the configured formatter when the project contains
+that formatter's config; LSP formatting is not a fallback. The ESLint and Biome
+servers similarly require their project config before they start. Lua
+diagnostics continue to come from `lua_ls`. This means formatter ownership is
+split between Mason, system/global npm state, and project configuration.
 
 ## Configuration Patterns
 

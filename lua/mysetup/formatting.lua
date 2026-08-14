@@ -2,6 +2,7 @@ local project_config = require("mysetup.project_config")
 
 require("conform").setup({
   formatters_by_ft = {
+    lua = { "stylua" },
     javascript = { "biome", "prettierd", stop_after_first = true },
     javascriptreact = { "biome", "prettierd", stop_after_first = true },
     typescript = { "biome", "prettierd", stop_after_first = true },
@@ -10,6 +11,11 @@ require("conform").setup({
     cpp = { "clang-format" },
   },
   formatters = {
+    stylua = {
+      condition = function(_, context)
+        return project_config.has(context.buf, { [[\v^\.stylua\.toml$]], [[\v^stylua\.toml$]] })
+      end,
+    },
     biome = {
       condition = function(_, context)
         return project_config.has(context.buf, { [[\v^biome\.jsonc?$]] })

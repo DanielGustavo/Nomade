@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-require("mysetup.mason_lock")(servers_to_configure, { "codelldb" })
+require("mysetup.mason_lock")(servers_to_configure, { "codelldb", "stylua" })
 
 for server_name, config in pairs(servers_to_configure) do
   vim.lsp.config(server_name, config)
