@@ -166,6 +166,17 @@ Project scaffolding commands open an interactive terminal:
 - `:JavaGradleInit`: Run `gradle init`
 - `:JavaSpringInit`: Generate a Spring Boot project through Spring Initializr
 
+Java source-file commands create classes, interfaces, enums, records, annotations,
+and JUnit 5 tests through `template.nvim`:
+
+- `:JavaNewClass`, `:JavaNewInterface`, `:JavaNewEnum`
+- `:JavaNewRecord`, `:JavaNewAnnotation`, `:JavaNewTest`
+- `<leader>jn`: Create a class
+- `<leader>jT`: Create a test
+
+Packages are inferred from standard Maven/Gradle source roots, matching test
+files are placed under `src/test/java`, and existing files are not overwritten.
+
 `nvim-java` manages its JDTLS, test/debug, Spring Boot, Lombok, and compatible
 JDK tooling separately from Mason. Maven, Gradle, `curl`, and `unzip` remain
 system-managed prerequisites for project tasks.

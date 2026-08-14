@@ -97,5 +97,6 @@ installPlugin("nvim-neotest/neotest", "1c529a1ef9c82e8131e872368415cecc2bb86ea2"
 installPlugin("nvim-neotest/neotest-python", "1b56ca4ba51c6014f986d6548ee629bdc95589d1")
 installPlugin("MunifTanjim/nui.nvim", "de740991c12411b663994b2860f1a4fd0937c130")
 installPlugin("JavaHello/spring-boot.nvim", "98c6ff1dcdda943d341bba3c00ae9d190a2e5f7d")
+installPlugin("nvimdev/template.nvim", "308f6f8f0bf98cb7c71855ffa8a3019a5642d1cd")
 installPlugin("nvim-java/nvim-java", "9e8b842ea9eff3ebf25fb7360908ed4d4f87c56a")
 installPlugin("Vigemus/iron.nvim", "c7f8047d964fb155a701b7c860fa3d4143d713c5")

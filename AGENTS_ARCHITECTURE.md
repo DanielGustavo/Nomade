@@ -75,7 +75,7 @@ contract.
 | `lsp.lua` | LSP capabilities, servers, enablement, attach maps | Depends on Blink, Mason, Mason-LSPConfig, and Neovim 0.11 APIs; delegates Mason package setup to `mason_lock.lua` |
 | `formatting.lua` | Formatters and format-on-save | Uses Conform; formatter binaries are external/Mason or system state |
 | `python.lua` | Python environments, tests, and REPL | Uses venv-selector, Neotest, and Iron; project commands inherit the selected environment |
-| `java.lua` | nvim-java setup and Maven/Gradle/Spring project scaffolding | Uses nvim-java, Spring Boot Tools, and terminal commands |
+| `java.lua` | nvim-java setup, template-backed Java file creation, and Maven/Gradle/Spring scaffolding | Uses nvim-java, template.nvim, Spring Boot Tools, and terminal commands |
 | `treesitter.lua` | Parser installation and syntax features | Uses the legacy `nvim-treesitter.configs` setup API |
 | `completion.lua` | Blink completion behavior | Uses `<Tab>`, `<S-Tab>`, `<C-k>`, and `<CR>` |
 | `dap.lua` | C/C++ CodeLLDB debugging and DAP UI | Uses the app-specific Mason path; prompts once per session for executable |
