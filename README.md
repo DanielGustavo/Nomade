@@ -14,7 +14,7 @@ Run:
 
 The installer installs or verifies the system dependencies, Neovim `v0.11.5`,
 FiraCode Nerd Font, Node/npm, the local locked Node dependencies, and the global
-`eslint_d` and `prettierd` npm packages. It creates `/usr/local/bin/nvim`
+`eslint_d`, `prettierd`, and `@biomejs/biome` npm packages. It creates `/usr/local/bin/nvim`
 unless another Neovim executable is already present. When another installation
 exists, the script asks for a safe custom executable name and creates an
 isolated `NVIM_APPNAME` wrapper.
@@ -49,6 +49,7 @@ The configured LSP server IDs are:
 - `ts_ls`
 - `jsonls`
 - `eslint`
+- `biome` when the project has a `biome.json` or `biome.jsonc` config
 - `prismals`
 - `tailwindcss`
 - `clangd`
@@ -77,8 +78,13 @@ Treesitter is configured for:
 
 Conform formats on save with:
 
-- JavaScript and TypeScript: `prettierd`
-- C and C++: `clang-format`
+- JavaScript, JSX, TypeScript, and TSX: `biome` when the project has a Biome
+  config, otherwise `prettierd` when the project has a Prettier config
+- C and C++: `clang-format` when the project has a `.clang-format` config
+
+The ESLint language server is likewise started only for projects with an ESLint
+config. Biome provides linting when its config is present. No formatter or
+linter fallback configuration is used.
 
 `nvim-autopairs` handles bracket and quote pairs. `nvim-ts-autotag` closes and
 renames HTML/XML-style tags using Treesitter.

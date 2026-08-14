@@ -1,3 +1,5 @@
+local project_config = require("mysetup.project_config")
+
 local servers_to_configure = {
   lua_ls = {
     settings = {
@@ -17,7 +19,17 @@ local servers_to_configure = {
   },
 
   jsonls = {},
-  eslint = {},
+  eslint = {
+    root_dir = function(bufnr, on_dir)
+      local root = project_config.root(bufnr, {
+        [[\v^eslint\.config\..+$]],
+        [[\v^\.eslintrc(\..*)?$]],
+      }, "eslintConfig")
+      if root then
+        on_dir(root)
+      end
+    end,
+  },
   prismals = {},
   tailwindcss = {},
 
@@ -75,3 +87,14 @@ for server_name, config in pairs(servers_to_configure) do
 end
 
 vim.lsp.enable(vim.tbl_keys(servers_to_configure))
+
+vim.lsp.config("biome", {
+  cmd = { "biome", "lsp-proxy" },
+  root_dir = function(bufnr, on_dir)
+    local root = project_config.root(bufnr, { [[\v^biome\.jsonc?$]] })
+    if root then
+      on_dir(root)
+    end
+  end,
+})
+vim.lsp.enable("biome")

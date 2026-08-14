@@ -152,7 +152,7 @@ fi
 
 # NPM Tools
 log_info "Installing global NPM packages..."
-sudo npm install -g eslint_d @fsouza/prettierd || log_info "NPM install failed, check permissions."
+sudo npm install -g eslint_d @fsouza/prettierd @biomejs/biome || log_info "NPM install failed, check permissions."
 
 #######################################
 ## Finalization

@@ -109,17 +109,21 @@ assumptions are expressed only as comments in the install list.
 Mason is rooted at `<data>/mason`. Exact Mason package versions are declared in
 the tracked `mason-packages.json` lockfile. LSP servers are declared in
 `lsp.lua`; Mason-LSPConfig receives versioned requests for the corresponding
-tools. The configured server IDs are `lua_ls`,
+tools. The configured Mason-managed server IDs are `lua_ls`,
 `ts_ls`, `jsonls`, `eslint`, `prismals`, `tailwindcss`, `clangd`, and `cmake`.
+Biome is configured separately as an external `biome lsp-proxy` server.
 CodeLLDB is also ensured through the Mason registry for DAP, but is not part of
 the LSP server list. Startup rejects incomplete, extra, or malformed lockfile
 entries and reconciles installed packages whose receipt version differs from the
 locked version. Unmanaged Mason packages are left untouched.
 
 Formatters are configured separately through Conform. `install.sh` installs
-`eslint_d` and `prettierd` globally with npm, while C/C++ formatting relies on
-`clang-format` being available. This means formatter ownership is split between
-system/global npm state and the Neovim config.
+`eslint_d`, `prettierd`, and Biome globally with npm, while C/C++ formatting
+relies on `clang-format` being available. Conform only runs the configured
+formatter when the project contains that formatter's config; LSP formatting is
+not a fallback. The ESLint and Biome servers similarly require their project
+config before they start. This means formatter ownership is split between
+system/global npm state and project configuration.
 
 ## Configuration Patterns
 
@@ -145,7 +149,7 @@ system/global npm state and the Neovim config.
 - The configured DAP adapter path is
   `<data>/mason/packages/codelldb/extension/adapter/codelldb`.
 - External commands used by the config include `git`, `fdfind`, `rg`, `clangd`,
-  `clang-format`, npm-installed `prettierd`/`eslint_d`, and Mason-managed tools.
+  `clang-format`, npm-installed `prettierd`/`eslint_d`/`biome`, and Mason-managed tools.
 - Neovim 0.11 behavior is assumed by `vim.lsp.config`, `vim.lsp.enable`, and
   the pinned Neovim version in `install.sh`.
 
