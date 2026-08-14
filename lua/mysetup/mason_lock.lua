@@ -53,10 +53,23 @@ local function load(expected_packages)
   return packages
 end
 
-local function versioned_specs(servers, package_versions, mappings)
+local lspconfig_to_package = {
+  lua_ls = "lua-language-server",
+  ts_ls = "typescript-language-server",
+  jsonls = "json-lsp",
+  eslint = "eslint-lsp",
+  prismals = "prisma-language-server",
+  tailwindcss = "tailwindcss-language-server",
+  clangd = "clangd",
+  cmake = "cmake-language-server",
+  pyright = "pyright",
+  ruff = "ruff",
+}
+
+local function versioned_specs(servers, package_versions)
   local specs = {}
   for server_name in pairs(servers) do
-    local package_name = mappings.lspconfig_to_package[server_name]
+    local package_name = lspconfig_to_package[server_name]
     specs[#specs + 1] = ("%s@%s"):format(server_name, package_versions[package_name])
   end
   return specs
@@ -104,11 +117,10 @@ end
 
 local function setup(servers, additional_package_names)
   local mason_lspconfig = require("mason-lspconfig")
-  local mason_mappings = mason_lspconfig.get_mappings()
   local expected_packages = {}
 
   for server_name in pairs(servers) do
-    expected_packages[mason_mappings.lspconfig_to_package[server_name]] = true
+    expected_packages[lspconfig_to_package[server_name]] = true
   end
   for _, package_name in ipairs(additional_package_names) do
     expected_packages[package_name] = true
@@ -116,7 +128,7 @@ local function setup(servers, additional_package_names)
 
   local package_versions = load(expected_packages)
   mason_lspconfig.setup({
-    ensure_installed = package_versions and versioned_specs(servers, package_versions, mason_mappings) or {},
+    ensure_installed = package_versions and versioned_specs(servers, package_versions) or {},
     automatic_enable = false,
   })
 
