@@ -1,7 +1,15 @@
 local lockfile_path = vim.fn.stdpath("config") .. "/mason-packages.json"
 
 local function notify(message, level)
-  vim.notify(message, level, { title = "Mason" })
+  local function show()
+    vim.notify(message, level, { title = "Mason" })
+  end
+
+  if vim.in_fast_event() then
+    vim.schedule(show)
+  else
+    show()
+  end
 end
 
 local function invalid(message)

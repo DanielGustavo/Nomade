@@ -66,6 +66,7 @@ The configured LSP server IDs are:
 - `clangd`
 - `cmake`
 - `pyright` and `ruff` for Python projects
+- `jdtls` for Maven and Gradle Java projects
 
 When an LSP client is attached:
 
@@ -86,7 +87,7 @@ current buffer. Its main completion mappings are `<Tab>` and `<S-Tab>` to move,
 Treesitter is configured for:
 
 `javascript`, `typescript`, `lua`, `vim`, `vimdoc`, `query`, `markdown`,
-`markdown_inline`, `styled`, `c`, `cpp`, and `cmake`.
+`markdown_inline`, `styled`, `c`, `cpp`, `cmake`, `python`, and `java`.
 
 Conform formats on save with:
 
@@ -96,6 +97,8 @@ Conform formats on save with:
 - Lua: `stylua` when the project has a `.stylua.toml` or `stylua.toml` config
 - Python: `ruff format` when the project has `pyproject.toml`, `ruff.toml`, or
   `uv.lock`
+- Java: the configured Spotless or formatter-maven-plugin task when present,
+  otherwise Mason's `google-java-format`
 
 This repository's Lua style is defined in [`.stylua.toml`](.stylua.toml). Lua
 diagnostics are provided by the `lua_ls` language server.
@@ -133,6 +136,32 @@ Project commands run through the selected environment. Install `pytest` and
 any notebook kernel in the project's uv environment; Mason supplies Pyright,
 Ruff, and debugpy for editor infrastructure.
 
+### Java
+
+Java projects use `nvim-jdtls` with a single workspace rooted at the nearest
+`.git`, `mvnw`, or `gradlew`, which keeps multi-module projects on one language
+server. JDK selection follows `JAVA_HOME`, then mise or asdf's selected Java.
+JDTLS itself requires a Java 21 runtime; project language levels remain managed
+by Maven or Gradle.
+
+Neotest supports JUnit 4, JUnit 5, and TestNG through `neotest-java`:
+
+- `<leader>tt`: Run the nearest test
+- `<leader>tf`: Run the current test file
+- `<leader>td`: Debug the nearest test method
+- `<leader>tD`: Debug the current test class
+- `<leader>jo`: Organize imports
+
+Java build tools prefer project wrappers and run in a terminal:
+
+- `<leader>jb`: Build the project
+- `<leader>jt`: Run project tests
+- `<leader>jc`: Clean the project
+
+JDTLS, Java debug/test bundles, and `google-java-format` are locked in
+`mason-packages.json`. JDKs, mise/asdf, Maven, and Gradle remain project or
+system-managed prerequisites; missing prerequisites produce a one-time warning.
+
 ### Git And Debugging
 
 `gitsigns.nvim` displays Git changes and current-line blame:
@@ -140,7 +169,7 @@ Ruff, and debugpy for editor infrastructure.
 - `<leader>th`: Preview the current hunk
 - `<leader>rh`: Reset the current hunk
 
-The DAP setup targets C and C++ through CodeLLDB:
+The DAP setup targets C and C++ through CodeLLDB and Java tests through JDTLS:
 
 - `<leader>DC`: Continue or start debugging
 - `<leader>DO`: Step over

@@ -95,4 +95,6 @@ installPlugin("rcarriga/nvim-dap-ui", "f7d75cca202b52a60c520ec7b1ec3414d6e77b0f"
 installPlugin("linux-cultist/venv-selector.nvim", "cc4bb3975de8835291f9bb45889e96c6b2795fc4")
 installPlugin("nvim-neotest/neotest", "1c529a1ef9c82e8131e872368415cecc2bb86ea2")
 installPlugin("nvim-neotest/neotest-python", "1b56ca4ba51c6014f986d6548ee629bdc95589d1")
+installPlugin("mfussenegger/nvim-jdtls", "6e9d953f0b82bccdb834cfde0e893f3119c22592")
+installPlugin("rcasia/neotest-java", "ed5360c9213d0bbde93fc3aeb4fa560cd95cce59")
 installPlugin("Vigemus/iron.nvim", "c7f8047d964fb155a701b7c860fa3d4143d713c5")
