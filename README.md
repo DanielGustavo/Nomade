@@ -6,18 +6,29 @@ and Neovim 0.11 LSP APIs.
 
 ## Installation
 
-Run:
+Run the interactive installer:
 
 ```bash
 ./install.sh
 ```
 
-The installer installs or verifies the system dependencies, Neovim `v0.11.5`,
-FiraCode Nerd Font, Node/npm, the local locked Node dependencies, and the global
-`eslint_d`, `prettierd`, and `@biomejs/biome` npm packages. It creates `/usr/local/bin/nvim`
-unless another Neovim executable is already present. When another installation
-exists, the script asks for a safe custom executable name and creates an
-isolated `NVIM_APPNAME` wrapper.
+The menu starts with no phases selected. Choose any combination, or choose
+`all`. An empty selection exits without changes. Phases can also be run directly
+or non-interactively:
+
+```bash
+./install.sh system node
+scripts/install-nvim.sh --name nvim-test
+scripts/install-nvim.sh --force
+```
+
+The phases are `system`, `node`, `font`, `nvim`, and `npm`. Each phase is safe to
+run independently and installs only its own prerequisites. The `nvim` phase
+uses `/opt` and `/usr/local/bin` by default when elevated access is available,
+and falls back to user-local paths otherwise. `INSTALL_ROOT`, `BIN_DIR`, and
+the corresponding command-line options configure those paths. Existing
+Neovim distributions require `--force` to reinstall; existing non-installer
+executables are never overwritten.
 
 On first startup, the configuration clones missing plugins at pinned revisions
 into Neovim's data directory at `<data>/site/pack/libs/start`, installs the
@@ -148,7 +159,12 @@ General mappings include:
 - `lua/mysetup/formatting.lua`: Conform formatter configuration
 - `lua/mysetup/autopairs.lua`: Automatic bracket pairing
 - Other files in `lua/mysetup/`: Individual plugin configuration
-- `install.sh`: OS-level installation and Neovim distribution setup
+- `install.sh`: Interactive and command-line installation phase dispatcher
+- `scripts/install-system.sh`: Base operating-system dependencies
+- `scripts/install-node.sh`: Node.js and npm runtime
+- `scripts/install-font.sh`: Nerd Font installation
+- `scripts/install-nvim.sh`: Neovim distribution and executable wrapper
+- `scripts/install-npm.sh`: Local/global npm tooling and fzf shell settings
 
 For architecture, startup ordering, dependencies, and refactor guidance, read
 [`AGENTS_ARCHITECTURE.md`](AGENTS_ARCHITECTURE.md).

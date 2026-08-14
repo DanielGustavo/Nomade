@@ -1,170 +1,113 @@
-#!/bin/bash
-NVIM_VERSION="v0.11.5"
-NVIM_ARCHIVE="nvim-linux-x86_64.tar.gz"
-INSTALL_ROOT="/opt"
-NVIM_URL="https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/${NVIM_ARCHIVE}"
-
-NERD_FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip"
-NERD_FONT_ZIP="FiraCode.zip"
-FONT_DIR="${HOME}/.local/share/fonts"
-FONT_NAME="FiraCode Nerd Font"
-
+#!/usr/bin/env bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PHASE_DIR="${SCRIPT_DIR}/scripts"
+PHASES=(system node font nvim npm)
 
-#######################################
-## utils
-#######################################
-log_info() {
-  echo "INFO: $1"
+usage() {
+  cat <<EOF
+Usage: $0 [all|phase ...] [nvim options]
+
+Run without arguments to choose phases interactively. Phases are run in this
+order: ${PHASES[*]}.
+
+Phases:
+  system  Install base operating-system dependencies
+  node    Install Node.js and npm
+  font    Install FiraCode Nerd Font
+  nvim    Install Neovim and its executable wrapper
+  npm     Install repository and global npm tools, plus fzf shell settings
+
+The nvim phase accepts --name, --install-root, --bin-dir, and --force.
+EOF
 }
 
-log_error() {
-  echo "ERROR: $1" >&2
+die() {
+  printf 'ERROR: %s\n' "$1" >&2
   exit 1
 }
 
-install_pkg() {
-  local pkg_name="$1"
-  if ! command -v "${pkg_name}" &> /dev/null; then
-    log_info "Ensuring '${pkg_name}' is installed..."
-    sudo apt install -y "${pkg_name}" || log_error "Failed to install '${pkg_name}'."
-  fi
+phase_script() {
+  printf '%s/install-%s.sh' "$PHASE_DIR" "$1"
 }
 
-#######################################
-## Coexistence Check
-#######################################
-NVIM_EXEC_NAME="nvim"
-IS_CUSTOM=false
+is_phase() {
+  local candidate="$1"
+  local phase
+  for phase in "${PHASES[@]}"; do
+    [[ "$candidate" == "$phase" ]] && return 0
+  done
+  return 1
+}
 
-if command -v nvim &> /dev/null; then
-    echo "--------------------------------------------------------"
-    echo "WARNING: An existing Neovim installation was detected."
-    echo "To avoid conflicts, choose a name for the new executable."
-    echo "Examples: nvim-new, nvim-test, nvim-v011"
-    echo "--------------------------------------------------------"
-    read -p "Enter new executable name: " USER_EXEC_NAME
-    
-    if [[ -z "$USER_EXEC_NAME" ]]; then
-        log_error "Executable name cannot be empty."
-    fi
-    if [[ ! "$USER_EXEC_NAME" =~ ^[A-Za-z0-9_-]+$ ]]; then
-        log_error "Executable name must contain only letters, numbers, underscores, and hyphens."
-    fi
-    NVIM_EXEC_NAME=$USER_EXEC_NAME
-    IS_CUSTOM=true
+choose_phases() {
+  local selection
+  printf 'Select phases (numbers separated by spaces, or all):\n' >&2
+  local index=1
+  local phase
+  for phase in "${PHASES[@]}"; do
+    printf '  [ ] %d) %s\n' "$index" "$phase" >&2
+    ((index += 1))
+  done
+  printf '  [ ] a) all\n' >&2
+  read -r -p 'Selection: ' selection
+
+  [[ -z "$selection" ]] && return 0
+  if [[ "$selection" == "all" || "$selection" == "a" ]]; then
+    printf '%s\n' all
+    return 0
+  fi
+
+  local item
+  local -a selected=()
+  for item in $selection; do
+    [[ "$item" =~ ^[1-5]$ ]] || die "Invalid selection: ${item}."
+    selected+=("${PHASES[$((item - 1))]}")
+  done
+  printf '%s\n' "${selected[@]}"
+}
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+  usage
+  exit 0
 fi
 
-NVIM_DIR="${INSTALL_ROOT}/${NVIM_EXEC_NAME}-dist"
-
-#######################################
-## Installing dependencies
-#######################################
-log_info "Updating APT package lists..."
-sudo apt-get update || log_error "Failed to update APT package list."
-
-install_pkg "curl"
-install_pkg "git"
-install_pkg "gcc"
-install_pkg "fzf"
-install_pkg "unzip"
-install_pkg "fontconfig"
-install_pkg "fd-find"
-install_pkg "ripgrep"
-install_pkg "cmake"
-install_pkg "bear"
-# NOTE: After first nvim startup, cmake-language-server is installed by mason.
-# If it crashes (pygls 2.x incompatibility), run:
-#   <data>/mason/packages/cmake-language-server/venv/bin/pip install "pygls<2.0.0"
-
-if ! command -v "npm" &> /dev/null; then
-  log_info "npm not found. Installing nodejs now..."
-  sudo apt install -y "nodejs" "npm" || log_error "Failed to install 'nodejs'."
-fi
-
-#######################################
-## Installing Nerd Font
-#######################################
-log_info "Checking if '${FONT_NAME}' is already installed..."
-
-if fc-list | grep -q "${FONT_NAME}"; then
-  log_info "${FONT_NAME} is already installed. Skipping download."
+declare -a requested=()
+declare -a nvim_args=()
+if [[ "$#" -eq 0 ]]; then
+  mapfile -t requested < <(choose_phases)
 else
-  log_info "${FONT_NAME} not found. Proceeding with installation..."
-  mkdir -p "${FONT_DIR}"
-  curl -fL "${NERD_FONT_URL}" -o "${NERD_FONT_ZIP}" || log_error "Failed to download Nerd Font."
-  unzip -o "${NERD_FONT_ZIP}" -d "${FONT_DIR}"
-  fc-cache -fv
-  rm "${NERD_FONT_ZIP}"
-  log_info "Nerd Font installation completed."
+  while [[ "$#" -gt 0 && "$1" != --* ]]; do
+    requested+=("$1")
+    shift
+  done
+  nvim_args=("$@")
 fi
 
-#######################################
-## Installing Neovim
-#######################################
-if [ -d "${NVIM_DIR}" ]; then
-  log_error "Directory ${NVIM_DIR} already exists. Please remove it to proceed."
+if [[ "${requested[0]:-}" == "all" ]]; then
+  requested=("${PHASES[@]}")
 fi
 
-log_info "Downloading Neovim ${NVIM_VERSION}..."
-curl -fLO "${NVIM_URL}" || log_error "Failed to download Neovim."
+declare -A selected=()
+for argument in "${requested[@]}"; do
+  is_phase "$argument" || die "Unknown phase: ${argument}."
+  selected["$argument"]=1
+done
 
-log_info "Unpacking Neovim to ${NVIM_DIR}..."
-sudo mkdir -p "${NVIM_DIR}"
-sudo tar -xzf "${NVIM_ARCHIVE}" -C "${NVIM_DIR}" --strip-components=1
-rm "${NVIM_ARCHIVE}"
+[[ "${#selected[@]}" -eq 0 ]] && exit 0
 
-#######################################
-## Creating Isolated Wrapper (NVIM_APPNAME)
-#######################################
-WRAPPER_PATH="/usr/local/bin/${NVIM_EXEC_NAME}"
+[[ "${#nvim_args[@]}" -eq 0 || "${selected[nvim]+yes}" == yes ]] ||
+  die "Options are only valid with the nvim phase."
+[[ "${#nvim_args[@]}" -eq 0 || "${#selected[@]}" -eq 1 ]] ||
+  die "nvim options cannot be combined with other phases."
 
-if [ "$IS_CUSTOM" = true ]; then
-    log_info "Creating isolated executable at ${WRAPPER_PATH}..."
-    sudo tee "${WRAPPER_PATH}" > /dev/null <<EOF
-#!/bin/bash
-# This variable isolates config to ~/.config/${NVIM_EXEC_NAME}
-export NVIM_APPNAME="${NVIM_EXEC_NAME}"
-exec "${NVIM_DIR}/bin/nvim" "\$@"
-EOF
-else
-    log_info "Creating default symbolic link at ${WRAPPER_PATH}..."
-    sudo ln -sf "${NVIM_DIR}/bin/nvim" "${WRAPPER_PATH}"
-fi
-
-sudo chmod +x "${WRAPPER_PATH}"
-
-#######################################
-## Additional Configs (FZF & NPM)
-#######################################
-# Local Node dependencies are required by the TypeScript LSP configuration.
-log_info "Installing local NPM dependencies..."
-npm ci --prefix "${SCRIPT_DIR}" || log_error "Failed to install local NPM dependencies."
-
-# FZF Config
-FZF_COMMAND="export FZF_DEFAULT_OPTS='--bind alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up'"
-if ! grep -q "FZF_DEFAULT_OPTS" ~/.bashrc; then
-  log_info "Adding Fzf key bindings to ~/.bashrc"
-  echo "${FZF_COMMAND} # Custom key bindings for fzf" >> ~/.bashrc
-fi
-
-# NPM Tools
-log_info "Installing global NPM packages..."
-sudo npm install -g eslint_d @fsouza/prettierd @biomejs/biome || log_info "NPM install failed, check permissions."
-
-#######################################
-## Finalization
-#######################################
-log_info "Installation completed successfully!"
-if [ "$IS_CUSTOM" = true ]; then
-    log_info "ISOLATED version installed."
-    log_info "Command: ${NVIM_EXEC_NAME}"
-    log_info "Config folder: ~/.config/${NVIM_EXEC_NAME}"
-    log_info "Data folder: ~/.local/share/${NVIM_EXEC_NAME}"
-    mkdir -p "${HOME}/.config/${NVIM_EXEC_NAME}"
-else
-    log_info "STANDARD version installed."
-    log_info "Command: nvim"
-fi
+for phase in "${PHASES[@]}"; do
+  [[ "${selected[$phase]+yes}" == yes ]] || continue
+  if [[ "$phase" == nvim ]]; then
+    "$(phase_script "$phase")" "${nvim_args[@]}"
+  else
+    [[ "${#nvim_args[@]}" -eq 0 ]] || die "nvim options cannot be used with other phases."
+    "$(phase_script "$phase")"
+  fi
+done

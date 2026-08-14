@@ -20,7 +20,8 @@ and plugins.
 .
 ├── init.lua                  # Neovim composition root
 ├── lua/mysetup/              # Eager, side-effect configuration modules
-├── install.sh                # OS/tool/font/Neovim bootstrap
+├── install.sh                # Installation phase dispatcher
+├── scripts/                  # Independently runnable installation phases
 ├── package.json              # Node development dependency metadata
 ├── package-lock.json
 ├── .luarc.json               # Lua language-server/editor settings
@@ -88,10 +89,20 @@ and is expected to be required once from `init.lua`.
 
 ### Bootstrap Layer
 
-`install.sh` installs or verifies system prerequisites, downloads a pinned
-Neovim release, installs a Nerd Font, installs locked local and global npm
-tools, and creates a wrapper or symlink. It can coexist with another Neovim
-installation by using a different executable name and `NVIM_APPNAME`.
+`install.sh` presents an interactive phase checklist when invoked without
+arguments and dispatches explicit phase names otherwise. The independently
+runnable scripts under `scripts/` provide `system`, `node`, `font`, `nvim`, and
+`npm` phases in that canonical order. Each phase ensures only its own runtime
+prerequisites, so a single part of the installation can be rerun without
+reinstalling the configuration.
+
+The `nvim` phase downloads a pinned Neovim release, creates a system-wide
+wrapper or symlink when elevated access is available, and falls back to
+user-local paths otherwise. Installation paths are configurable with
+environment variables or command-line options. Existing distributions require
+`--force`; force only replaces wrappers marked as created by this installer.
+The package helper detects `apt-get`, `dnf`, `yum`, `pacman`, `zypper`, or `apk`
+using the distribution identity from `/etc/os-release`.
 
 ### Plugin Layer
 
