@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup({
+require("nvim-treesitter.configs").setup({
   ensure_installed = {
     "javascript",
     "typescript",
@@ -11,7 +11,7 @@ require('nvim-treesitter.configs').setup({
     "styled",
     "c",
     "cpp",
-    "cmake"
+    "cmake",
   },
 
   sync_install = false,
@@ -26,6 +26,6 @@ require('nvim-treesitter.configs').setup({
   ignore_install = {},
 
   indent = {
-    enable = true
+    enable = true,
   },
 })

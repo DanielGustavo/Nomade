@@ -8,9 +8,8 @@ fzfLua.setup({
     cmd = [[fdfind --type f --exclude .git --exclude node_modules]],
   },
   grep = {
-    rg_opts =
-    "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!.git/*' -g '!node_modules/*'",
-  }
+    rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!.git/*' -g '!node_modules/*'",
+  },
 })
 
 local function getUnmerged()

@@ -33,8 +33,7 @@ end
 
 function M.has(bufnr, files, package_key)
   local path = start_path(bufnr)
-  return #find_config(path, files) > 0
-    or (package_key and package_has_key(path, package_key))
+  return #find_config(path, files) > 0 or (package_key and package_has_key(path, package_key))
 end
 
 function M.root(bufnr, files, package_key)

@@ -68,7 +68,10 @@ local function reconcile_installed(package_versions, registry)
 
         package:install({ version = expected_version }, function(install_success, install_err)
           if not install_success then
-            notify(("Could not install %s@%s: %s"):format(package_name, expected_version, install_err), vim.log.levels.ERROR)
+            notify(
+              ("Could not install %s@%s: %s"):format(package_name, expected_version, install_err),
+              vim.log.levels.ERROR
+            )
           end
         end)
       end)

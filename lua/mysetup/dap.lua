@@ -4,7 +4,7 @@ local dapui = require("dapui")
 local codelldb = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"
 
 -- Adapter
-dap.adapters.codelldb  = function(callback, _)
+dap.adapters.codelldb = function(callback, _)
   if vim.fn.executable(codelldb) ~= 1 then
     vim.notify("codelldb not found. Mason should install it automatically", vim.log.levels.ERROR)
     return
@@ -23,11 +23,11 @@ end
 local executable_path = nil
 
 -- C / C++ launch configuration
-local cpp_configs      = {
+local cpp_configs = {
   {
-    name        = "Launch executable",
-    type        = "codelldb",
-    request     = "launch",
+    name = "Launch executable",
+    type = "codelldb",
+    request = "launch",
     program = function()
       if not executable_path or executable_path == "" then
         executable_path = vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
@@ -40,15 +40,23 @@ local cpp_configs      = {
 }
 
 dap.configurations.cpp = cpp_configs
-dap.configurations.c   = cpp_configs
+dap.configurations.c = cpp_configs
 
 -- UI
 dapui.setup()
 
-dap.listeners.before.attach.dapui_config           = function() dapui.open() end
-dap.listeners.before.launch.dapui_config           = function() dapui.open() end
-dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
-dap.listeners.before.event_exited.dapui_config     = function() dapui.close() end
+dap.listeners.before.attach.dapui_config = function()
+  dapui.open()
+end
+dap.listeners.before.launch.dapui_config = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated.dapui_config = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited.dapui_config = function()
+  dapui.close()
+end
 
 -- Keymaps
 vim.keymap.set("n", "<leader>DC", dap.continue, { desc = "DAP: Continue / Start" })

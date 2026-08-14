@@ -17,4 +17,4 @@ vim.keymap.set("n", "<C-k>", "<C-y>", { desc = "Scroll up" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
-vim.keymap.set("x", "<leader>p", "\"_dP", { desc = "Paste without copying" })
+vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without copying" })

@@ -15,7 +15,7 @@ require("lualine").setup({
       statusline = 1000,
       tabline = 1000,
       winbar = 1000,
-    }
+    },
   },
   sections = {
     lualine_a = { "mode" },
@@ -31,18 +31,20 @@ require("lualine").setup({
     lualine_c = { "filename" },
     lualine_x = { "location" },
     lualine_y = {},
-    lualine_z = {}
+    lualine_z = {},
   },
   tabline = {
-    lualine_a = { {
-      "buffers",
-      mode = 4,
-       max_length = function()
-         return vim.o.columns
-       end,
-    } },
+    lualine_a = {
+      {
+        "buffers",
+        mode = 4,
+        max_length = function()
+          return vim.o.columns
+        end,
+      },
+    },
   },
   winbar = {},
   inactive_winbar = {},
-  extensions = {}
+  extensions = {},
 })
